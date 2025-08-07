@@ -39,13 +39,27 @@ func (s *SqliteDeckRepository) ReadDecks() ([]*domain.Deck, error) {
 }
 
 func (s *SqliteDeckRepository) CreateDeck(deck domain.Deck) error {
+	if err := s.db.Create(&deck).Error; err != nil {
+		return fmt.Errorf("failed to create deck: %w", err)
+	}
 	return nil
 }
 
 func (s *SqliteDeckRepository) DeleteDeck(id uint) error {
+	if err := s.db.Delete(&domain.Deck{}, id).Error; err != nil {
+		return fmt.Errorf("failed to delete deck with id %d: %w", id, err)
+	}
 	return nil
 }
 
 func (s *SqliteDeckRepository) UpdateDeck(deck domain.Deck) error {
+	result := s.db.Model(&deck).Select("Name", "Description").Updates(&deck)
+
+	if result.Error != nil {
+		return fmt.Errorf("failed to update deck: %w", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("deck with ID %d not found", deck.ID)
+	}
 	return nil
 }
