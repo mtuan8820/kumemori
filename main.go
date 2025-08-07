@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"kumemori/internal/adapters/repository"
+	"log"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -15,8 +17,13 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
+	_, err := repository.InitDb()
+	if err != nil {
+		log.Fatal("Failed to connect to DB:", err)
+	}
+
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "kumemori",
 		Width:  1024,
 		Height: 768,
