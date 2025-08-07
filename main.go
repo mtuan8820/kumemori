@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"kumemori/internal/adapters/repository"
+	"kumemori/internal/boostrap"
 	"log"
 
 	"github.com/wailsapp/wails/v2"
@@ -17,7 +17,7 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	_, err := repository.InitDb()
+	err := boostrap.InitApp()
 	if err != nil {
 		log.Fatal("Failed to connect to DB:", err)
 	}

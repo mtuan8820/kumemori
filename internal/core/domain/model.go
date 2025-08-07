@@ -16,3 +16,15 @@ type Card struct {
 	Due          time.Time `gorm:"not null"`
 	LastReviewed time.Time `gorm:"not null"`
 }
+
+type Deck struct {
+	ID          uint   `gorm:"primaryKey"`
+	Name        string `gorm:"type:text;not null;uniqueIndex"`
+	Description string `gorm:"type:text"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+
+	NewCardLimit  int `gorm:"default:20"`
+	ReviewLimit   int `gorm:"default:100"`
+	LastStudiedAt time.Time
+}
