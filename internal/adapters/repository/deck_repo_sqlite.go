@@ -6,7 +6,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"kumemori/internal/core/domain"
+	"kumemori/internal/core/domain/entity"
 )
 
 type SqliteDeckRepository struct {
@@ -17,8 +17,8 @@ func NewDeckSqliteRepository(db *gorm.DB) *SqliteDeckRepository {
 	return &SqliteDeckRepository{db: db}
 }
 
-func (s *SqliteDeckRepository) ReadDeck(id uint) (*domain.Deck, error) {
-	var deck domain.Deck
+func (s *SqliteDeckRepository) ReadDeck(id uint) (*entity.Deck, error) {
+	var deck entity.Deck
 	err := s.db.First(&deck, id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -29,8 +29,8 @@ func (s *SqliteDeckRepository) ReadDeck(id uint) (*domain.Deck, error) {
 	return &deck, nil
 }
 
-func (s *SqliteDeckRepository) ReadDecks() ([]*domain.Deck, error) {
-	var decks []*domain.Deck
+func (s *SqliteDeckRepository) ReadDecks() ([]*entity.Deck, error) {
+	var decks []*entity.Deck
 	err := s.db.Find(&decks).Error
 	if err != nil {
 		return nil, fmt.Errorf("decks not found: %v", err)
@@ -38,7 +38,7 @@ func (s *SqliteDeckRepository) ReadDecks() ([]*domain.Deck, error) {
 	return decks, nil
 }
 
-func (s *SqliteDeckRepository) CreateDeck(deck domain.Deck) error {
+func (s *SqliteDeckRepository) CreateDeck(deck entity.Deck) error {
 	if err := s.db.Create(&deck).Error; err != nil {
 		return fmt.Errorf("failed to create deck: %w", err)
 	}
@@ -46,13 +46,13 @@ func (s *SqliteDeckRepository) CreateDeck(deck domain.Deck) error {
 }
 
 func (s *SqliteDeckRepository) DeleteDeck(id uint) error {
-	if err := s.db.Delete(&domain.Deck{}, id).Error; err != nil {
+	if err := s.db.Delete(&entity.Deck{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete deck with id %d: %w", id, err)
 	}
 	return nil
 }
 
-func (s *SqliteDeckRepository) UpdateDeck(deck domain.Deck) error {
+func (s *SqliteDeckRepository) UpdateDeck(deck entity.Deck) error {
 	result := s.db.Model(&deck).Select("Name", "Description").Updates(&deck)
 
 	if result.Error != nil {

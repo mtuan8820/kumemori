@@ -1,4 +1,4 @@
-package domain
+package entity
 
 import "time"
 
@@ -27,4 +27,6 @@ type Deck struct {
 	NewCardLimit  int `gorm:"default:20"`
 	ReviewLimit   int `gorm:"default:100"`
 	LastStudiedAt time.Time
+
+	Cards []Card `gorm:"constraint:OnDelete:CASCADE;"`
 }

@@ -17,7 +17,7 @@ func main() {
 	// Create an instance of the app structure
 	app := NewApp()
 
-	err := boostrap.InitApp()
+	deps, err := boostrap.InitApp()
 	if err != nil {
 		log.Fatal("Failed to connect to DB:", err)
 	}
@@ -34,6 +34,7 @@ func main() {
 		OnStartup:        app.startup,
 		Bind: []interface{}{
 			app,
+			deps.DeckService,
 		},
 	})
 

@@ -1,26 +1,37 @@
-import {useState} from 'react';
-import logo from './assets/images/logo-universal.png';
 import './App.css';
-import {Greet} from "../wailsjs/go/main/App";
+import {ListDecks} from "../wailsjs/go/service/DeckService"
+import { useEffect, useState } from 'react';
+import loadDecks from './features/deck/deckList';
+
+class Deck{
+    id: number;
+    name: string;
+
+    constructor(id: number, name: string){
+        this.name = name;
+        this.id = id
+    }
+}
+
 
 function App() {
-    const [resultText, setResultText] = useState("Please enter your name below 👇");
-    const [name, setName] = useState('');
-    const updateName = (e: any) => setName(e.target.value);
-    const updateResultText = (result: string) => setResultText(result);
+    const [decks, setDecks] = useState<Deck[]>([])
 
-    function greet() {
-        Greet(name).then(updateResultText);
-    }
+    useEffect(()=>{
+        async function fetchDecks(){
+            const data = await loadDecks()
+            setDecks(data)
+        }
+        fetchDecks()
+    }, [])
 
     return (
         <div id="App">
-            <img src={logo} id="logo" alt="logo"/>
-            <div id="result" className="result">{resultText}</div>
-            <div id="input" className="input-box">
-                <input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text"/>
-                <button className="btn" onClick={greet}>Greet</button>
-            </div>
+            {decks.map((deck, index) => (
+                <div key={index}>
+                    <p>{deck.name}</p>
+                </div>
+            ))}
         </div>
     )
 }

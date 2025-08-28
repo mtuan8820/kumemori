@@ -3,9 +3,9 @@ package repository
 import (
 	"fmt"
 
-	"gorm.io/gorm"
+	"kumemori/internal/core/domain/entity"
 
-	"kumemori/internal/core/domain"
+	"gorm.io/gorm"
 )
 
 type SqliteCardRepository struct {
@@ -16,8 +16,8 @@ func NewCardSqliteRepository(db *gorm.DB) *SqliteCardRepository {
 	return &SqliteCardRepository{db: db}
 }
 
-func (s *SqliteCardRepository) ReadCardsByDeck(id uint) ([]*domain.Card, error) {
-	var cards []*domain.Card
+func (s *SqliteCardRepository) ReadCardsByDeck(id uint) ([]*entity.Card, error) {
+	var cards []*entity.Card
 	err := s.db.Where("deck_id = ?", id).Find(&cards).Error
 	if err != nil {
 		return nil, fmt.Errorf("failed to read cards for deck %d: %w", id, err)
@@ -25,8 +25,8 @@ func (s *SqliteCardRepository) ReadCardsByDeck(id uint) ([]*domain.Card, error) 
 	return cards, nil
 }
 
-func (s *SqliteCardRepository) ReadCards() ([]*domain.Card, error) {
-	var cards []*domain.Card
+func (s *SqliteCardRepository) ReadCards() ([]*entity.Card, error) {
+	var cards []*entity.Card
 	err := s.db.Find(&cards).Error
 	if err != nil {
 		return nil, fmt.Errorf("cards not found: %v", err)
@@ -34,7 +34,7 @@ func (s *SqliteCardRepository) ReadCards() ([]*domain.Card, error) {
 	return cards, nil
 }
 
-func (s *SqliteCardRepository) CreateCard(card domain.Card) error {
+func (s *SqliteCardRepository) CreateCard(card entity.Card) error {
 	result := s.db.Create(&card)
 	if result.Error != nil {
 		return fmt.Errorf("failed to create card: %w", result.Error)
@@ -43,7 +43,7 @@ func (s *SqliteCardRepository) CreateCard(card domain.Card) error {
 }
 
 func (s *SqliteCardRepository) DeleteCard(id uint) error {
-	result := s.db.Delete(&domain.Card{}, id)
+	result := s.db.Delete(&entity.Card{}, id)
 
 	if result.Error != nil {
 		return fmt.Errorf("failed to delete card: %w", result.Error)
@@ -54,8 +54,8 @@ func (s *SqliteCardRepository) DeleteCard(id uint) error {
 	return nil
 }
 
-func (s *SqliteCardRepository) UpdateCard(card domain.Card) error {
-	result := s.db.Model(&domain.Card{}).
+func (s *SqliteCardRepository) UpdateCard(card entity.Card) error {
+	result := s.db.Model(&entity.Card{}).
 		Where("id = ?", card.ID).
 		Updates(card)
 

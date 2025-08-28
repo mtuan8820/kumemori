@@ -1,25 +1,20 @@
 package ports
 
-import "kumemori/internal/core/domain"
-
-type DeckService interface {
-	ReadDecks() ([]*domain.Deck, error)
-	ReadDeck(id uint) (*domain.Deck, error)
-}
+import "kumemori/internal/core/domain/entity"
 
 type DeckRepository interface {
-	ReadDecks() ([]*domain.Deck, error)
-	ReadDeck(id uint) (*domain.Deck, error)
-	CreateDeck(deck domain.Deck) error
+	ReadDecks() ([]*entity.Deck, error)
+	ReadDeck(id uint) (*entity.Deck, error)
+	CreateDeck(deck entity.Deck) error
 	DeleteDeck(id uint) error
-	UpdateDeck(deck domain.Deck) error
+	UpdateDeck(deck entity.Deck) error
 }
 
 type CardRepository interface {
-	CreateCard(card domain.Card) error
-	ReadCardsByDeck(deckID uint) ([]*domain.Card, error)
-	ReadCard(id uint) (*domain.Card, error)
-	ReadCards() ([]*domain.Card, error)
-	UpdateCard(card domain.Card) error
+	CreateCard(card entity.Card) error
+	ReadCardsByDeck(deckID uint) ([]*entity.Card, error)
+	ReadCard(id uint) (*entity.Card, error)
+	ReadCards() ([]*entity.Card, error)
+	UpdateCard(card entity.Card) error
 	DeleteCard(id uint) error
 }

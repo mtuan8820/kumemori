@@ -6,7 +6,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"kumemori/internal/core/domain"
+	"kumemori/internal/core/domain/entity"
 )
 
 // InitDb opens a SQLite connection and auto-migrates the Card and Deck models.
@@ -17,7 +17,7 @@ func InitDb() (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(&domain.Card{}, &domain.Deck{})
+	err = db.AutoMigrate(&entity.Card{}, &entity.Deck{})
 	if err != nil {
 		return nil, err
 	}
