@@ -1,9 +1,9 @@
 export class Deck{
-    id: number;
-    name: string;
+    ID: number;
+    Name: string;
 
-    constructor(id: number, name: string){
-        this.name = name;
-        this.id = id
+    constructor(ID: number, Name: string){
+        this.Name = Name;
+        this.ID = ID
     }
 }

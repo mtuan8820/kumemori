@@ -14,6 +14,7 @@ export async function loadDecks(): Promise<Deck[]> {
 }
 
 export async function deleteDeck(id: number) {
+    console.log("delete deck" + id +" call")
     try {
         await DeleteDeck(id)
     }
@@ -22,13 +23,14 @@ export async function deleteDeck(id: number) {
     }
 }
 
-export async function createDeck(name: string){
+export async function createDeck(name: string) : Promise<Deck|null>{
     try {
         let deck = await CreateDeck(name)
         return deck
     }
     catch (err){
         console.log(err)
+        return null
     }
 
 }
