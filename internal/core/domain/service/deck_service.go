@@ -36,3 +36,7 @@ func (s *DeckService) ListDecks() ([]*entity.Deck, error) {
 func (s *DeckService) DeleteDeck(id uint) error {
 	return s.repo.DeleteDeck(id)
 }
+
+func (s *DeckService) UpdateDeck(id uint, name string) error {
+	return s.repo.UpdateDeck(id, name)
+}

@@ -1,12 +1,6 @@
-import type { Deck } from '../models/Deck'; 
-import {GetDeck, ListDecks, CreateDeck} from '../../wailsjs/go/service/DeckService'
+import type { Deck } from '@/models/Deck'; 
+import {GetDeck, ListDecks, CreateDeck, DeleteDeck, UpdateDeck} from '../../wailsjs/go/service/DeckService'
 import type { Card } from '@/models/Card';
-
-// export interface DeckService{
-//   getDecks(): Promise<Deck[]>
-//   getDeck(id: number): Promise<Deck>
-//   createDeck(deck: Deck): Promise<Deck>
-// }
 
 export async function getDecks(): Promise<Deck[]> {
   let decks = await ListDecks()
@@ -34,13 +28,22 @@ export async function getDeck(id: number): Promise<Deck | null> {
   return null
 }
 
-export async function createDeck(deck: Deck): Promise<Deck|null> {
-  let newDeck = await CreateDeck(deck.name)
-  if (newDeck != null){
-    return {
+export async function createDeck(name: string): Promise<Deck|null> {
+  let newDeck = await CreateDeck(name)
+  if (newDeck){
+    const deck: Deck={
       id: newDeck.ID,
       name: newDeck.Name
     }
+    return deck
   }
   return null
+}
+
+export async function deleteDeck(id: number) {
+  await DeleteDeck(id)
+}
+
+export async function updateDeck(id: number, name: string){
+  await UpdateDeck(id, name)
 }

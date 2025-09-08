@@ -52,14 +52,9 @@ func (s *SqliteDeckRepository) DeleteDeck(id uint) error {
 	return nil
 }
 
-func (s *SqliteDeckRepository) UpdateDeck(deck entity.Deck) error {
-	result := s.db.Model(&deck).Select("Name", "Description").Updates(&deck)
-
-	if result.Error != nil {
-		return fmt.Errorf("failed to update deck: %w", result.Error)
-	}
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("deck with ID %d not found", deck.ID)
+func (s *SqliteDeckRepository) UpdateDeck(id uint, name string) error {
+	if err := s.db.Model(&entity.Deck{}).Where("id = ?", id).Update("name", name).Error; err != nil {
+		return fmt.Errorf("failed to update deck with id %d: %w", id, err)
 	}
 	return nil
 }

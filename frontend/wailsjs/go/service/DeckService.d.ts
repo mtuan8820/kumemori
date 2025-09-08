@@ -9,3 +9,5 @@ export function DeleteDeck(arg1:number):Promise<void>;
 export function GetDeck(arg1:number):Promise<entity.Deck>;
 
 export function ListDecks():Promise<Array<entity.Deck>>;
+
+export function UpdateDeck(arg1:number,arg2:string):Promise<void>;

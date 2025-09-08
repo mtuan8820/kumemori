@@ -17,3 +17,7 @@ export function GetDeck(arg1) {
 export function ListDecks() {
   return window['go']['service']['DeckService']['ListDecks']();
 }
+
+export function UpdateDeck(arg1, arg2) {
+  return window['go']['service']['DeckService']['UpdateDeck'](arg1, arg2);
+}

@@ -7,7 +7,7 @@ type DeckRepository interface {
 	ReadDeck(id uint) (*entity.Deck, error)
 	CreateDeck(deck entity.Deck) error
 	DeleteDeck(id uint) error
-	UpdateDeck(deck entity.Deck) error
+	UpdateDeck(id uint, name string) error
 }
 
 type CardRepository interface {
