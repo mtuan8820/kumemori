@@ -5,9 +5,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
-  },
+    },
+    "allowJs": true,
 
+  },
   "references": [
     {
       "path": "./tsconfig.config.json"
