@@ -8,6 +8,7 @@ import (
 
 type AppDependencies struct {
 	DeckService *service.DeckService
+	CardService *service.CardService
 }
 
 func InitApp() (*AppDependencies, error) {
@@ -17,11 +18,13 @@ func InitApp() (*AppDependencies, error) {
 	}
 
 	deckRepo := repository.NewDeckSqliteRepository(db)
-	// cardRepo := repository.NewCardSqliteRepository(db)
+	cardRepo := repository.NewCardSqliteRepository(db)
 
 	deckService := service.NewDeckService(deckRepo)
+	cardService := service.NewCardService(cardRepo)
 
 	return &AppDependencies{
 		DeckService: deckService,
+		CardService: cardService,
 	}, nil
 }

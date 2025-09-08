@@ -3,10 +3,9 @@ package repository
 import (
 	"errors"
 	"fmt"
+	"kumemori/internal/core/domain/entity"
 
 	"gorm.io/gorm"
-
-	"kumemori/internal/core/domain/entity"
 )
 
 type SqliteDeckRepository struct {
@@ -46,9 +45,11 @@ func (s *SqliteDeckRepository) CreateDeck(deck entity.Deck) error {
 }
 
 func (s *SqliteDeckRepository) DeleteDeck(id uint) error {
+	// delete deck
 	if err := s.db.Delete(&entity.Deck{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete deck with id %d: %w", id, err)
 	}
+
 	return nil
 }
 

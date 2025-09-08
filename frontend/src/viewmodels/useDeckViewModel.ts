@@ -1,6 +1,5 @@
 import { ref, onMounted } from "vue"
 
-import type { Card } from '@/models/Card';
 import type { Deck } from "@/models/Deck" 
 import {GetDeck, ListDecks, CreateDeck, DeleteDeck, UpdateDeck} from '../../wailsjs/go/service/DeckService'
 

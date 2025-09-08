@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 
 	"kumemori/internal/core/domain/entity"
@@ -66,4 +67,16 @@ func (s *SqliteCardRepository) UpdateCard(card entity.Card) error {
 		return fmt.Errorf("card with ID %d not found", card.ID)
 	}
 	return nil
+}
+
+func (s *SqliteCardRepository) ReadCard(id uint) (*entity.Card, error) {
+	var card entity.Card
+
+	if err := s.db.First(&card, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("card with ID %d not found", id)
+		}
+		return nil, err
+	}
+	return &card, nil
 }

@@ -12,9 +12,9 @@ type DeckRepository interface {
 
 type CardRepository interface {
 	CreateCard(card entity.Card) error
-	ReadCardsByDeck(deckID uint) ([]*entity.Card, error)
 	ReadCard(id uint) (*entity.Card, error)
 	ReadCards() ([]*entity.Card, error)
 	UpdateCard(card entity.Card) error
 	DeleteCard(id uint) error
+	ReadCardsByDeck(deckID uint) ([]*entity.Card, error)
 }
