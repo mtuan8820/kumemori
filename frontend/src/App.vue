@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import SideBar from "./components/SideBar.vue";
 
 const { t, availableLocales: languages, locale } = useI18n();
 
@@ -19,10 +20,9 @@ document.body.addEventListener("click", function (event) {
 <template>
   <!-- Header -->
   <div class="header">
-    <!-- navigation -->
-    <div class="nav">
-      <router-link to="/">{{ t("nav.home") }}</router-link>
-      <router-link to="/about">{{ t("nav.about") }}</router-link>
+    <!-- App's Name -->
+    <div>
+      Kumemori
     </div>
     <!-- Menu -->
     <div class="menu">
@@ -45,10 +45,15 @@ document.body.addEventListener("click", function (event) {
       </div>
     </div>
   </div>
+  
   <!-- Page -->
-  <div class="view">
-    <router-view />
+  <div class="grid grid-cols-10 absolute top-[50px] bottom-0 left-0 right-0 overflow-auto">
+    <SideBar class="col-span-3 bg-white"/>
+    <div class="col-span-7 bg-emerald-600">
+      <router-view />
+    </div>
   </div>
+
 </template>
 
 <style lang="scss">
@@ -73,7 +78,6 @@ body {
   // width: 900px;
   // height: 520px;
   height: 100%;
-  background-color: rgba(219, 188, 239, 0.9);
   overflow: hidden;
 }
 .header {
@@ -170,12 +174,5 @@ body {
   }
 }
 
-.view {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-}
+
 </style>
