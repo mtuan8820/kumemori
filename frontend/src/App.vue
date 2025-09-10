@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+
 import SideBar from "./components/SideBar.vue";
-
-const { t, availableLocales: languages, locale } = useI18n();
-
-const onclickLanguageHandle = (item: string) => {
-  item !== locale.value ? (locale.value = item) : false;
-};
-
-const onclickMinimise = () => {};
-
-const onclickQuit = () => {};
+import Header from "./components/Header.vue";
 
 document.body.addEventListener("click", function (event) {
   event.preventDefault();
@@ -18,41 +9,23 @@ document.body.addEventListener("click", function (event) {
 </script>
 
 <template>
-  <!-- Header -->
-  <div class="header">
-    <!-- App's Name -->
-    <div>
-      Kumemori
-    </div>
-    <!-- Menu -->
-    <div class="menu">
-      <div class="language">
-        <div
-          v-for="item in languages"
-          :key="item"
-          :class="{ active: item === locale }"
-          @click="onclickLanguageHandle(item)"
-          class="lang-item"
-        >
-          {{ t("languages." + item) }}
-        </div>
-      </div>
-      <div class="bar">
-        <div class="bar-btn" @click="onclickMinimise">
-          {{ t("topbar.minimise") }}
-        </div>
-        <div class="bar-btn" @click="onclickQuit">{{ t("topbar.quit") }}</div>
+  <div class="flex flex-col h-screen">
+    <!-- Header -->
+    <header class="h-[50px]">
+        <Header />
+    </header>
+    
+    <!-- Page -->
+    <div class="grid grid-cols-10 flex-1">
+      <!-- sidabar -->
+      <SideBar class="col-span-3 bg-light"/>
+
+      <!-- view -->
+      <div class="col-span-7 bg-emerald-600">
+        <router-view />
       </div>
     </div>
-  </div>
-  
-  <!-- Page -->
-  <div class="grid grid-cols-10 absolute top-[50px] bottom-0 left-0 right-0 overflow-auto">
-    <SideBar class="col-span-3 bg-white"/>
-    <div class="col-span-7 bg-emerald-600">
-      <router-view />
     </div>
-  </div>
 
 </template>
 
@@ -80,99 +53,4 @@ body {
   height: 100%;
   overflow: hidden;
 }
-.header {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
-  height: 50px;
-  padding: 0 10px;
-  background-color: rgba(171, 126, 220, 0.9);
-  .nav {
-    a {
-      display: inline-block;
-      min-width: 50px;
-      height: 30px;
-      line-height: 30px;
-      padding: 0 5px;
-      margin-right: 8px;
-      background-color: #ab7edc;
-      border-radius: 2px;
-      text-align: center;
-      text-decoration: none;
-      color: #000000;
-      font-size: 14px;
-      white-space: nowrap;
-      &:hover,
-      &.router-link-exact-active {
-        background-color: #d7a8d8;
-        color: #ffffff;
-      }
-    }
-  }
-  .menu {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: space-between;
-    .language {
-      margin-right: 20px;
-      border-radius: 2px;
-      background-color: #c3c3c3;
-      overflow: hidden;
-      .lang-item {
-        display: inline-block;
-        min-width: 50px;
-        height: 30px;
-        line-height: 30px;
-        padding: 0 5px;
-        background-color: transparent;
-        text-align: center;
-        text-decoration: none;
-        color: #000000;
-        font-size: 14px;
-        &:hover {
-          background-color: #ff050542;
-          cursor: pointer;
-        }
-        &.active {
-          background-color: #ff050542;
-          color: #ffffff;
-          cursor: not-allowed;
-        }
-      }
-    }
-    .bar {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: flex-end;
-      min-width: 150px;
-      .bar-btn {
-        display: inline-block;
-        min-width: 80px;
-        height: 30px;
-        line-height: 30px;
-        padding: 0 5px;
-        margin-left: 8px;
-        background-color: #ab7edc;
-        border-radius: 2px;
-        text-align: center;
-        text-decoration: none;
-        color: #000000;
-        font-size: 14px;
-        &:hover {
-          background-color: #d7a8d8;
-          color: #ffffff;
-          cursor: pointer;
-        }
-      }
-    }
-  }
-}
-
-
 </style>
