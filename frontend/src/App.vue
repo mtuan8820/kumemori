@@ -21,7 +21,7 @@ document.body.addEventListener("click", function (event) {
       <SideBar class="col-span-3 bg-light"/>
 
       <!-- view -->
-      <div class="col-span-7 bg-emerald-600">
+      <div class="col-span-7 bg-light p-4">
         <router-view />
       </div>
     </div>

@@ -8,6 +8,7 @@
     --bg-light: hsl(0 0% 100%);
     --text: hsl(0 0% 5%);
     --text-muted: hsl(0 0% 30%);
+    --border: rgb(17 24 39 / 0.1);
 }
 
 .dark{
@@ -16,6 +17,7 @@
     --bg-light: hsl(0 0% 10%);
     --text: hsl(0 0% 95%);
     --text-muted: hsl(0 0% 70%);
+    --border: rgb(255 255 255 / 0.1);
 }
 
 *{

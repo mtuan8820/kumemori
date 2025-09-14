@@ -64,8 +64,8 @@
         </Dialog>
 
         <ul>
-            <li v-for="deck in decks" :key="deck.id">
-                {{ deck.name }}
+            <li v-for="deck in decks" :key="deck.id" >
+                <div @click="$router.push(`/deck/${deck.id}/${deck.name}`)">{{ deck.name }}</div>
                 <button @click="handleDeleteDeck(deck.id)">x</button>
                 {{" "}}
                 <button @click="openRenameDialog(deck.id, deck.name)">Edit</button>

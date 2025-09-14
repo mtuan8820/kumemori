@@ -4,7 +4,7 @@ import { Squares2X2Icon, PuzzlePieceIcon, FolderIcon, FolderPlusIcon, Cog6ToothI
 
 </script>
 <template>
-<div class="pl-4 pt-2 flex flex-col">
+<div class="pl-4 pt-2 flex flex-col border-r border-border">
     <div>
         <RouterLink class="menuItem" to="/"> 
             <Squares2X2Icon class="icon"/> 
@@ -52,15 +52,15 @@ import { Squares2X2Icon, PuzzlePieceIcon, FolderIcon, FolderPlusIcon, Cog6ToothI
 </div>
 </template>
 
-<style lang="postcss" scoped>
+<style>
     .menuItem{
-        @apply pr-4 pl-2 text-sm flex mb-1 gap-3 text-gray-600 cursor-pointer
-        hover:font-medium hover:text-[#030712]
+        @apply pr-4 pl-2 text-sm flex mb-1 gap-3 text-textmuted cursor-pointer
+        hover:font-medium hover:text-text
     }
     
 
     .router-link-active{
-        @apply font-medium text-base text-[#030712]
+        @apply font-medium text-base text-text
     }
 
     .icon{

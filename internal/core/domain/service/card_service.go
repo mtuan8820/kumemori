@@ -13,10 +13,11 @@ func NewCardService(repo ports.CardRepository) *CardService {
 	return &CardService{repo: repo}
 }
 
-func (s *CardService) CreateCard(front string, back string) (*entity.Card, error) {
+func (s *CardService) CreateCard(front string, back string, deckId uint) (*entity.Card, error) {
 	card := &entity.Card{
-		Front: front,
-		Back:  back,
+		Front:  front,
+		Back:   back,
+		DeckID: deckId,
 	}
 
 	if err := s.repo.CreateCard(*card); err != nil {

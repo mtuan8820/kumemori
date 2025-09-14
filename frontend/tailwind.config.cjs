@@ -10,6 +10,7 @@ module.exports = {
         light: "var(--bg-light)",
         text: "var(--text)",
         textmuted: "var(--text-muted)",
+        border: "var(--border)",
       }
     },
   },
