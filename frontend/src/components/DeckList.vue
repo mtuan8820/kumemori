@@ -100,12 +100,13 @@ li{
 .search{
     @apply bg-light border border-black px-2 py-1 rounded-md 
     flex items-center gap-1
-    focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 
+    focus-within:border-blue-500 
     focus:border-none
 }
 
 .search__input{
-    @apply border-none outline-none focus:ring-0
+    @apply flex-1 border-none outline-none 
+    dark:bg-light
 }
 
 </style>
