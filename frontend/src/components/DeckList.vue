@@ -1,75 +1,111 @@
 <script setup>
-    import { useDeckViewModel } from '@/viewmodels/useDeckViewModel'
-    import { onMounted, ref } from 'vue'
-    import Dialog from './Dialog.vue'
+import { useDeckViewModel } from '@/viewmodels/useDeckViewModel'
+import { ref } from 'vue'
+import Dialog from './Dialog.vue'
+import { FolderIcon, MinusIcon, PencilIcon, PlusIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 
-    const { decks, loading, loadDecks,  createDeck, deleteDeck, updateDeck } = useDeckViewModel()
+const { decks, loading, loadDecks, createDeck, deleteDeck, updateDeck } = useDeckViewModel()
 
-    const deckName = ref("")
+const deckName = ref("")
 
-    const dialogVisible = ref(false)
-    const selectedDeckId = ref(-1)
-    const deckUpdateName = ref("")
+const dialogVisible = ref(false)
+const selectedDeckId = ref(-1)
+const deckUpdateName = ref("")
 
-    async function handleCreateDeck(){
-        await createDeck(deckName.value)
-        deckName.value = ""
-        await loadDecks()
-    }
+async function handleCreateDeck() {
+    // await createDeck(deckName.value)
+    // deckName.value = ""
+    // await loadDecks()
+    console.log("create")
+}
 
-    async function handleDeleteDeck(id){
-        await deleteDeck(id)
-        await loadDecks()
-    }
+async function handleDeleteDeck(id) {
+    await deleteDeck(id)
+    await loadDecks()
+}
 
-    function openRenameDialog(id, name){
-        console.log(id, name)
-        selectedDeckId.value = id
-        deckUpdateName.value = name
-        dialogVisible.value = true
-    }
+function openRenameDialog(id, name) {
+    console.log(id, name)
+    selectedDeckId.value = id
+    deckUpdateName.value = name
+    dialogVisible.value = true
+}
 
-    async function handleRenameDeck(){
-        if (deckUpdateName.value == "" || selectedDeckId.value == -1){
-            dialogVisible.value = false
-            return
-        }
-        await updateDeck(selectedDeckId.value, deckUpdateName.value)
-        deckUpdateName.value = ""
-        selectedDeckId.value = -1
+async function handleRenameDeck() {
+    if (deckUpdateName.value == "" || selectedDeckId.value == -1) {
         dialogVisible.value = false
-        await loadDecks()
         return
     }
+    await updateDeck(selectedDeckId.value, deckUpdateName.value)
+    deckUpdateName.value = ""
+    selectedDeckId.value = -1
+    dialogVisible.value = false
+    await loadDecks()
+    return
+}
 
 
 </script>
 
 <template>
-        <div>
-        <h1>
+    <div>
+        <h1 class="mb-3 text-lg">
             Decks
         </h1>
-        <form>
-            <p>New deck name:</p>
-            <input v-model.trim="deckName" placeholder=""/>
-            <button @click="handleCreateDeck">Create</button>
-        </form>
-        <Dialog :is-open="dialogVisible" @close="dialogVisible=false">
+        <div class="flex justify-between mb-3 items-center">
+            <div></div>
+            <div class="flex items-center gap-3">
+                <button @click="handleCreateDeck"><PlusIcon class="w-5 h-5"/></button>
+                <div class="search">
+                    <input type="text" class="search__input" placeholder="Search flashcards"/>
+                    <MagnifyingGlassIcon class="w-5 h-5"/>
+                </div>
+
+            </div>
+        </div>
+        <Dialog :is-open="dialogVisible" @close="dialogVisible = false">
             <form>
                 <p>New deck name:</p>
-                <input v-model.trim = "deckUpdateName"/>
+                <input v-model.trim="deckUpdateName" />
                 <button @click="handleRenameDeck">Confirm</button>
             </form>
         </Dialog>
 
         <ul>
-            <li v-for="deck in decks" :key="deck.id" >
-                <div @click="$router.push(`/deck/${deck.id}/${deck.name}`)">{{ deck.name }}</div>
-                <button @click="handleDeleteDeck(deck.id)">x</button>
-                {{" "}}
-                <button @click="openRenameDialog(deck.id, deck.name)">Edit</button>
+            <li v-for="deck in decks" :key="deck.id" class="3">
+                <FolderIcon class="h-7 w-7 mr-2"/>
+                <div class="">
+                        <div @click="$router.push(`/deck/${deck.id}/${deck.name}`)">{{ deck.name }}</div>
+                        <div class="text-xs">
+                            <span>Last Studied: Sep 14, 25</span>  •  
+                            <span>Progress: 15/30</span>
+                        </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button @click="openRenameDialog(deck.id, deck.name)"><PencilIcon class="h-5 w-5"/></button>
+                    <button @click="handleDeleteDeck(deck.id)"><MinusIcon class="h-5 w-5"/></button>
+                </div>
             </li>
         </ul>
     </div>
 </template>
+
+<style>
+li{
+    @apply grid grid-cols-[auto,1fr,auto] gap-1 w-full items-center 
+    p-3 rounded-lg
+    hover:bg-dark
+}
+
+.search{
+    @apply bg-light border border-black px-2 py-1 rounded-md 
+    flex items-center gap-1
+    focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 
+    focus:border-none
+}
+
+.search__input{
+    @apply border-none outline-none focus:ring-0
+}
+
+</style>
