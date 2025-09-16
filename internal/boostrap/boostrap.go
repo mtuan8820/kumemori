@@ -2,13 +2,13 @@ package boostrap
 
 import (
 	"fmt"
-	"kumemori/internal/adapters/repository"
+	"kumemori/internal/adapter/repository"
+	"kumemori/internal/adapter/repository/sqlite"
 	"kumemori/internal/core/domain/service"
 )
 
 type AppDependencies struct {
 	DeckService *service.DeckService
-	CardService *service.CardService
 }
 
 func InitApp() (*AppDependencies, error) {
@@ -17,14 +17,11 @@ func InitApp() (*AppDependencies, error) {
 		return nil, fmt.Errorf("init db failed: %w", err)
 	}
 
-	deckRepo := repository.NewDeckSqliteRepository(db)
-	cardRepo := repository.NewCardSqliteRepository(db)
+	deckRepo := sqlite.NewDeckRepo(db)
 
 	deckService := service.NewDeckService(deckRepo)
-	cardService := service.NewCardService(cardRepo)
 
 	return &AppDependencies{
 		DeckService: deckService,
-		CardService: cardService,
 	}, nil
 }
