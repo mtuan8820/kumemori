@@ -41,6 +41,10 @@ func (s *DeckService) Save(deck *model.Deck) error {
 	return s.Repository.Save(deck)
 }
 
+func (s *DeckService) FindById(id uint) (*model.Deck, error) {
+	return s.Repository.FindByID(id)
+}
+
 // CRUD card
 
 func (s *DeckService) AddCard(deckID uint, card model.Card) error {

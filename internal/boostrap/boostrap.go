@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"kumemori/internal/adapter/repository"
 	"kumemori/internal/adapter/repository/sqlite"
-	"kumemori/internal/core/domain/service"
+	"kumemori/internal/domain/service"
 )
 
 type AppDependencies struct {

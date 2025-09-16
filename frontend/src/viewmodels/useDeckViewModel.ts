@@ -1,7 +1,7 @@
 import { ref, onMounted } from "vue"
 
 import type { Deck } from "@/models/Deck" 
-import {GetDeck, ListDecks, CreateDeck, DeleteDeck, UpdateDeck} from '../../wailsjs/go/service/DeckService'
+import {FindById, GetDecks, CreateDeck, Delete, Save} from '../../wailsjs/go/service/DeckService'
 
 export function useDeckViewModel(){
     const decks = ref<Deck[]>([])
@@ -9,7 +9,7 @@ export function useDeckViewModel(){
 
     async function loadDecks() {
         loading.value = true
-        let deckEntities = await ListDecks()
+        let deckEntities = await GetDecks()
         decks.value = deckEntities.map(deck => ({
             id: deck.ID,
             name: deck.Name,
@@ -24,7 +24,7 @@ export function useDeckViewModel(){
 
         loading.value = true
 
-        const newDeckEntity = await CreateDeck(name)
+        const newDeckEntity = await CreateDeck(name, [])
         if (newDeckEntity){
             const deck: Deck = {
                 id:newDeckEntity.ID,
@@ -40,11 +40,11 @@ export function useDeckViewModel(){
     }
 
     async function deleteDeck(id: number){
-        await DeleteDeck(id)
+        await Delete(id)
     }
 
     async function updateDeck(id: number, name: string){
-        await UpdateDeck(id, name)
+        // await Save(id, name)
     }
 
     onMounted(() => {
