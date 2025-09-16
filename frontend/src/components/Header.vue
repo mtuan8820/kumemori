@@ -5,11 +5,11 @@ import { onMounted, ref } from "vue";
 
 import { OpenURL } from "../../wailsjs/go/main/App"  
 
-const { t, availableLocales: languages, locale } = useI18n();
+// const { t, availableLocales: languages, locale } = useI18n();
 
-const onclickLanguageHandle = (item: string) => {
-  item !== locale.value ? (locale.value = item) : false;
-};
+// const onclickLanguageHandle = (item: string) => {
+//   item !== locale.value ? (locale.value = item) : false;
+// };
 
 const isDark = ref(false)
 

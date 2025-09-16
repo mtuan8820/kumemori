@@ -3,6 +3,7 @@ import { useDeckViewModel } from '@/viewmodels/useDeckViewModel'
 import { ref } from 'vue'
 import Dialog from './Dialog.vue'
 import { FolderIcon, MinusIcon, PencilIcon, PlusIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+import { RouterLink } from 'vue-router'
 
 const { decks, loading, loadDecks, createDeck, deleteDeck, updateDeck } = useDeckViewModel()
 
@@ -55,7 +56,8 @@ async function handleRenameDeck() {
         <div class="flex justify-between mb-3 items-center">
             <div></div>
             <div class="flex items-center gap-3">
-                <button @click="handleCreateDeck"><PlusIcon class="w-5 h-5"/></button>
+                <RouterLink to="/create-deck"><PlusIcon class="w-5 h-5"/></RouterLink>
+                
                 <div class="search">
                     <input type="text" class="search__input" placeholder="Search flashcards"/>
                     <MagnifyingGlassIcon class="w-5 h-5"/>

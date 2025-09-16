@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import DeckView from "@/views/DeckView.vue";
+import CreateDeckView from "@/views/CreateDeckView.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -15,6 +16,10 @@ const router = createRouter({
       component: DeckView,
       props: true
     },
+    {
+      path: "/create-deck",
+      component: CreateDeckView,
+    }
   ],
 });
 
