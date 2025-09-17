@@ -2,7 +2,6 @@ package boostrap
 
 import (
 	"fmt"
-	"kumemori/internal/adapter/repository"
 	"kumemori/internal/adapter/repository/sqlite"
 	"kumemori/internal/domain/service"
 )
@@ -12,7 +11,7 @@ type AppDependencies struct {
 }
 
 func InitApp() (*AppDependencies, error) {
-	db, err := repository.InitDb()
+	db, err := sqlite.InitDb()
 	if err != nil {
 		return nil, fmt.Errorf("init db failed: %w", err)
 	}

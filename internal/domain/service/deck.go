@@ -16,7 +16,7 @@ func NewDeckService(repository repo.DeckRepo) *DeckService {
 	}
 }
 
-func (s *DeckService) CreateDeck(name string, cards []model.Card) (*model.Deck, error) {
+func (s *DeckService) CreateDeck(name string, cards []*model.Card) (*model.Deck, error) {
 	deck := &model.Deck{
 		Name:  name,
 		Cards: cards,
@@ -101,6 +101,10 @@ func (s *DeckService) UpdateCard(deckID uint, cardID uint, front string, back st
 	return nil
 }
 
-// func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
-// 	return s.Repository.
-// }
+func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
+	deck, err := s.Repository.FindByID(deckID)
+	if err != nil {
+		return nil, err
+	}
+	return deck.Cards, nil
+}

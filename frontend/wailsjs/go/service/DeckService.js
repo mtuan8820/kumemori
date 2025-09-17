@@ -18,6 +18,10 @@ export function DeleteCard(arg1, arg2) {
   return window['go']['service']['DeckService']['DeleteCard'](arg1, arg2);
 }
 
+export function FindAllCards(arg1) {
+  return window['go']['service']['DeckService']['FindAllCards'](arg1);
+}
+
 export function FindById(arg1) {
   return window['go']['service']['DeckService']['FindById'](arg1);
 }

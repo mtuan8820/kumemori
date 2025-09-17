@@ -31,7 +31,7 @@ type Deck struct {
 	ReviewLimit   int
 	LastStudiedAt time.Time
 
-	Cards []Card
+	Cards []*Card
 }
 
 // ---- Aggregate behavior methods ----
@@ -43,7 +43,7 @@ func (d *Deck) AddCard(card Card) error {
 	}
 	card.DeckID = d.ID
 	card.CreatedAt = time.Now()
-	d.Cards = append(d.Cards, card)
+	d.Cards = append(d.Cards, &card)
 	return nil
 }
 
@@ -74,7 +74,7 @@ func (d *Deck) RemoveCard(cardID uint) error {
 func (d *Deck) FindCard(cardID uint) (*Card, error) {
 	for i, c := range d.Cards {
 		if c.ID == cardID {
-			return &d.Cards[i], nil
+			return d.Cards[i], nil
 		}
 	}
 	return nil, errors.New("card not found")

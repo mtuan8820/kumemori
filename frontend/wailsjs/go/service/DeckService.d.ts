@@ -10,6 +10,8 @@ export function Delete(arg1:number):Promise<void>;
 
 export function DeleteCard(arg1:number,arg2:number):Promise<void>;
 
+export function FindAllCards(arg1:number):Promise<Array<model.Card>>;
+
 export function FindById(arg1:number):Promise<model.Deck>;
 
 export function GetDecks():Promise<Array<model.Deck>>;
