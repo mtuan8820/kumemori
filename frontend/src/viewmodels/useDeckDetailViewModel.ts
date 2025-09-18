@@ -1,19 +1,17 @@
-import type { Card } from "@/models/Card";
+import type {model} from "../../wailsjs/go/models";
 import { ref } from "vue";
 import { ReadCardsByDeck, CreateCard } from "../../wailsjs/go/service/CardService";
 
 export function useDeckDetailViewModel(deckId: number){
-    const cards = ref<Card[]>([])
+    const cards = ref<model.Card[]>([])
 
     async function loadCards(){
-        const cardEntities = await ReadCardsByDeck(deckId);
-        if (cardEntities){
-            cards.value = cardEntities.map(card => ({
-                id: card.ID,
-                deckId: deckId,
-                front: card.Front,
-                back: card.Back
-            }))
+        try {
+            cards.value = await FindAllCards(deckId)
+            return cards
+        } catch (err) {
+            console.error("Failed to load cards:", err)
+            return []
         }
     }
 

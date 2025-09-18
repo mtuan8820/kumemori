@@ -16,16 +16,20 @@ document.body.addEventListener("click", function (event) {
     </header>
     
     <!-- Page -->
-    <div class="grid grid-cols-10 flex-1">
-      <!-- sidabar -->
-      <SideBar class="col-span-3 bg-light"/>
+    <div class="grid grid-cols-10 flex-1 overflow-y-auto overflow-x-hidden">
+      <!-- sidebar -->
+      <SideBar class="col-span-3 bg-light "/>
 
       <!-- view -->
-      <div class="col-span-7 bg-light p-4">
-        <router-view />
+      <div class="col-span-7 bg-light overflow-y-auto">
+        <router-view v-slot="{ Component }">
+          <div class="p-4">
+            <component :is="Component" />
+          </div>
+        </router-view>
       </div>
     </div>
-    </div>
+  </div>
 
 </template>
 
@@ -51,6 +55,5 @@ body {
   // width: 900px;
   // height: 520px;
   height: 100%;
-  overflow: hidden;
 }
 </style>

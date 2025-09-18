@@ -64,7 +64,7 @@ function openGithub() {
 
 </template>
 
-<style>
+<style scoped>
   .header{
     @apply 
         h-full w-full px-4 bg-light

@@ -37,7 +37,7 @@
     <CardSlider :cards="cards" />
 </template>
 
-<style>
+<style scoped>
     .card{
         @apply rounded-md border-border border w-full h-full
     }
