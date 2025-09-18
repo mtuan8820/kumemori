@@ -3,6 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 
 const props = defineProps<{
   modelValue: string
+  maxLength: number
 }>()
 
 const emit = defineEmits<{
@@ -34,6 +35,7 @@ const onInput = (e: Event) => {
   <textarea
     ref="textarea"
     :value="modelValue"
+    :maxlength="maxLength"
     @input="onInput"
     rows="1"
     class="w-full border rounded px-2 py-1 resize-none overflow-hidden"

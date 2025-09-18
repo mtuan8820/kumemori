@@ -3,7 +3,7 @@ import AdaptiveTextarea from '@/components/AdaptiveTextarea.vue';
 import {useCreateDeckViewModel} from '@/viewmodels/useCreateDeckViewModel'
 import { TrashIcon } from "@heroicons/vue/24/outline";
 
-const {cardItems, name, createCardItem, submitCreateDeck, deleteCardItem, disableDeleteCardItem} = useCreateDeckViewModel()
+const {cardItems, name, createCardItem, submitCreateDeck, deleteCardItem, disableDeleteCardItem, nameErrorMsg} = useCreateDeckViewModel()
 
 
 </script>
@@ -12,7 +12,8 @@ const {cardItems, name, createCardItem, submitCreateDeck, deleteCardItem, disabl
         <div class="flex justify-between sticky top-0 z-10 bg-light py-2">
             <div>
                 <h1>Create a new deck</h1>
-                <input v-model="name" placeholder="name"/>
+                <div class="errorMsg" v-if="nameErrorMsg">{{ nameErrorMsg }}</div>
+                <input @input="nameErrorMsg = ''" v-model="name" placeholder="name"/>
             </div>
             <div class="flex justify-end">
                 <button @click="submitCreateDeck">Create</button>
@@ -31,11 +32,11 @@ const {cardItems, name, createCardItem, submitCreateDeck, deleteCardItem, disabl
             </div>
             <div class="flex justify-between gap-4">
                 <div class="flex flex-col flex-1">
-                    <AdaptiveTextarea v-model="card.front"/>
+                    <AdaptiveTextarea :max-length=1000 v-model="card.front"/>
                     Front
                 </div> 
                 <div class="flex flex-col flex-1">
-                    <AdaptiveTextarea v-model="card.back"/>
+                    <AdaptiveTextarea :max-length=1000 v-model="card.back"/>
                     Back
                 </div>
             </div>
@@ -65,5 +66,8 @@ const {cardItems, name, createCardItem, submitCreateDeck, deleteCardItem, disabl
         @apply stroke-gray-400
     }
     
+    .errorMsg{
+        @apply text-sm text-red-600
+    }
 
 </style>
