@@ -2,10 +2,10 @@
 import {  ref } from 'vue';
 import emblaCarouselVue from 'embla-carousel-vue';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/vue/24/outline';
-import type { Card } from '@/models/Card';
+import type {model} from "../../wailsjs/go/models";
 
 interface CardSliderProps{
-  cards: Card[]
+  cards: model.Card[]
 }
 
 const props = defineProps<CardSliderProps>()
@@ -25,12 +25,12 @@ const toggleFrontBack = () => showFront.value = !showFront.value
   <div class="embla__viewport">
       <div class="embla__container">
 
-        <div class="embla__slide" v-for="card in props.cards" :key="card.id">
+        <div class="embla__slide" v-for="card in props.cards" :key="card.ID">
           <div class="embla__parallax">
             <div class="embla__parallax__layer">
               <div class="embla__card" @click="toggleFrontBack">
-                <div v-if="showFront">{{ card.front }}</div>
-                <div v-else>{{ card.back }}</div>
+                <div v-if="showFront">{{ card.Front }}</div>
+                <div v-else>{{ card.Back }}</div>
               </div>
             </div>
           </div>
@@ -45,7 +45,7 @@ const toggleFrontBack = () => showFront.value = !showFront.value
   </div>
 </template>
 
-<style>
+<style scoped>
 .embla {
   max-width: 48rem;
   margin: auto;

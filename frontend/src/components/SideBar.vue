@@ -52,7 +52,7 @@ import { Squares2X2Icon, PuzzlePieceIcon, FolderIcon, FolderPlusIcon, Cog6ToothI
 </div>
 </template>
 
-<style>
+<style scoped>
     .menuItem{
         @apply pr-4 pl-2 text-sm flex mb-1 gap-3 text-textmuted cursor-pointer
         hover:font-medium hover:text-text

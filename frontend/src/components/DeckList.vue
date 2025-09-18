@@ -74,25 +74,25 @@ async function handleRenameDeck() {
         </Dialog>
 
         <ul>
-            <li v-for="deck in decks" :key="deck.id" class="3">
+            <li v-for="deck in decks" :key="deck.ID" class="3">
                 <FolderIcon class="h-7 w-7 mr-2"/>
                 <div class="">
-                        <div @click="$router.push(`/deck/${deck.id}/${deck.name}`)">{{ deck.name }}</div>
+                        <div @click="$router.push(`/deck/${deck.ID}/${deck.Name}`)">{{ deck.Name }}</div>
                         <div class="text-xs">
                             <span>Last Studied: Sep 14, 25</span>  •  
                             <span>Progress: 15/30</span>
                         </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button @click="openRenameDialog(deck.id, deck.name)"><PencilIcon class="h-5 w-5"/></button>
-                    <button @click="handleDeleteDeck(deck.id)"><MinusIcon class="h-5 w-5"/></button>
+                    <button @click="openRenameDialog(deck.ID, deck.Name)"><PencilIcon class="h-5 w-5"/></button>
+                    <button @click="handleDeleteDeck(deck.ID)"><MinusIcon class="h-5 w-5"/></button>
                 </div>
             </li>
         </ul>
     </div>
 </template>
 
-<style>
+<style scoped>
 li{
     @apply grid grid-cols-[auto,1fr,auto] gap-1 w-full items-center 
     p-3 rounded-lg
