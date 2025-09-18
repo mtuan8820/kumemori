@@ -10,7 +10,7 @@ import { Squares2X2Icon, PuzzlePieceIcon, FolderIcon, FolderPlusIcon, Cog6ToothI
             <Squares2X2Icon class="icon"/> 
             Dashboard
         </RouterLink>
-        <RouterLink class="menuItem" to="/quiz">
+        <RouterLink class="menuItem" to="/">
             <PuzzlePieceIcon class="icon"/>
             Create Quiz
         </RouterLink>

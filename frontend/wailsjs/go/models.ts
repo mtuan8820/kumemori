@@ -1,4 +1,4 @@
-export namespace entity {
+export namespace model {
 	
 	export class Card {
 	    ID: number;

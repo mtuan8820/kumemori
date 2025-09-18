@@ -15,11 +15,11 @@ export function useDeckViewModel(){
     }
 
     async function deleteDeck(id: number){
-        await DeleteDeck(id)
+        await Delete(id)
     }
 
     async function updateDeck(id: number, name: string){
-        await UpdateDeck(id, name)
+        // await Save(id, name)
     }
 
     onMounted(() => {
