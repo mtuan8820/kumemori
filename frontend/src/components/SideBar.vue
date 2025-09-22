@@ -37,7 +37,7 @@ import { Squares2X2Icon, PuzzlePieceIcon, FolderIcon, FolderPlusIcon, Cog6ToothI
             <FolderIcon class="icon" />
             Deck example 5
         </div>
-        <button class="menuItem">
+        <button class="menuItem"  @click="$router.push(`/create-deck`)">
             <FolderPlusIcon class="icon" />
             Create New Deck
         </button>
