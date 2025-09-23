@@ -1,5 +1,5 @@
 import type {model} from "../../wailsjs/go/models";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { FindAllCards } from "../../wailsjs/go/service/DeckService";
 
 export function useDeckDetailViewModel(deckId: number){
@@ -22,6 +22,10 @@ export function useDeckDetailViewModel(deckId: number){
         // }
         // await AddCard(deckId, card)
     }
+
+    onMounted(() =>{
+        loadCards()
+    })
 
     return { cards, createCard, loadCards}
 }

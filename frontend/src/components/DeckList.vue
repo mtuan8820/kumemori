@@ -7,8 +7,6 @@ import { RouterLink } from 'vue-router'
 
 const { decks, loading, loadDecks, createDeck, deleteDeck, updateDeck } = useDeckViewModel()
 
-const deckName = ref("")
-
 const dialogVisible = ref(false)
 const selectedDeckId = ref(-1)
 const deckUpdateName = ref("")
@@ -84,7 +82,7 @@ async function handleRenameDeck() {
                         </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button @click="openRenameDialog(deck.ID, deck.Name)"><PencilIcon class="h-5 w-5"/></button>
+                    <button @click="$router.push(`/edit-deck/${deck.ID}/${deck.Name}`)"><PencilIcon class="h-5 w-5"/></button>
                     <button @click="handleDeleteDeck(deck.ID)"><MinusIcon class="h-5 w-5"/></button>
                 </div>
             </li>

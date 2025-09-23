@@ -29,7 +29,7 @@
     <div class="flex items-center justify-between mb-3">
 
         <h2>{{ props.name }}</h2>
-        <button class="flex items-center gap-1" @click="">
+        <button class="flex items-center gap-1" @click="$router.push(`/edit-deck/${deckId}/${props.name}}`)">
             <PencilIcon class="h-4 w-4"/> <span>Edit</span>
         </button>
     </div>
