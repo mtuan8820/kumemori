@@ -17,8 +17,8 @@ func NewDeckRepo(db *gorm.DB) *DeckRepo {
 
 // create a new deck with cards
 func (d *DeckRepo) Save(deck *model.Deck) error {
-	if err := d.db.Create(&deck).Error; err != nil {
-		return fmt.Errorf("failed to create deck: %w", err)
+	if err := d.db.Save(&deck).Error; err != nil {
+		return fmt.Errorf("failed to save deck: %w", err)
 	}
 	return nil
 }
@@ -51,10 +51,15 @@ func (d *DeckRepo) Delete(id uint) error {
 	return nil
 }
 
-// func (s *DeckRepo) AddCard() error {
-// 	return nil
-// }
+func (d *DeckRepo) SaveCard(card *model.Card) error {
+	var deck model.Deck
+	if err := d.db.First(&deck, "id = ?", card.DeckID).Error; err != nil {
+		return fmt.Errorf("card must belong to existing deck: %w", err)
+	}
 
-// func (s *DeckRepo) DeleteCard() error {
-// 	return nil
-// }
+	if err := d.db.Save(card).Error; err != nil {
+		return fmt.Errorf("failed to save card: %w", err)
+	}
+
+	return nil
+}

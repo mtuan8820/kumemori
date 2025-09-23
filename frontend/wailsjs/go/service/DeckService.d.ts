@@ -19,3 +19,5 @@ export function GetDecks():Promise<Array<model.Deck>>;
 export function Save(arg1:model.Deck):Promise<void>;
 
 export function UpdateCard(arg1:number,arg2:number,arg3:string,arg4:string):Promise<void>;
+
+export function UpdateDeck(arg1:number,arg2:string,arg3:Array<model.Card>):Promise<void>;

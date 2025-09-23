@@ -14,7 +14,7 @@ const props = defineProps<EditDeckViewProps>()
 
 const deckId = Number(props.id)
 
-const { cardItems, createCardItem, deleteCardItem } = useEditDeckViewModel(deckId)
+const { cardItems, createCardItem, deleteCardItem, submitUpdateDeck } = useEditDeckViewModel(deckId)
 
 
 
@@ -29,7 +29,7 @@ const { cardItems, createCardItem, deleteCardItem } = useEditDeckViewModel(deckI
             <div class="flex justify-end gap-2">
                 <button @click="$router.back()">Cancel</button>
 
-                <button @click="">Save</button>
+                <button @click="submitUpdateDeck('')">Save</button>
             </div>
         </div>
 

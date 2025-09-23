@@ -79,3 +79,7 @@ func (d *Deck) FindCard(cardID uint) (*Card, error) {
 	}
 	return nil, errors.New("card not found")
 }
+
+func (d *Deck) UpdateName(name string) {
+	d.Name = name
+}

@@ -1,9 +1,9 @@
 package service
 
 import (
+	"fmt"
 	"kumemori/internal/domain/model"
 	"kumemori/internal/domain/repo"
-	"time"
 )
 
 type DeckService struct {
@@ -54,7 +54,6 @@ func (s *DeckService) AddCard(deckID uint, card model.Card) error {
 	}
 
 	card.DeckID = deckID
-	card.CreatedAt = time.Now()
 
 	if err := deck.AddCard(card); err != nil {
 		return err
@@ -107,4 +106,24 @@ func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
 		return nil, err
 	}
 	return deck.Cards, nil
+}
+
+func (s *DeckService) UpdateDeck(deckID uint, name string, updatedCards []*model.Card) error {
+	deck, err := s.Repository.FindByID(deckID)
+	if err != nil {
+		return fmt.Errorf("deck not found: %w", err)
+	}
+
+	deck.UpdateName(name)
+	for _, uc := range updatedCards {
+		if err := s.Repository.SaveCard(uc); err != nil {
+			return err
+		}
+	}
+
+	if err := s.Repository.Save(deck); err != nil {
+		return fmt.Errorf("failed to save deck: %w", err)
+	}
+
+	return nil
 }

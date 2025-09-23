@@ -7,4 +7,5 @@ type DeckRepo interface {
 	FindAll() ([]*model.Deck, error)
 	FindByID(id uint) (*model.Deck, error)
 	Delete(id uint) error
+	SaveCard(card *model.Card) error
 }
