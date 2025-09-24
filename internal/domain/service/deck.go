@@ -6,6 +6,9 @@ import (
 	"kumemori/internal/domain/repo"
 )
 
+// make sure DeckService implements IDeckService
+var _ IDeckService = (*DeckService)(nil)
+
 // DeckService handle business logic for Deck and Card entity
 type DeckService struct {
 	Repository repo.DeckRepo
