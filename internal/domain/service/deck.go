@@ -6,6 +6,7 @@ import (
 	"kumemori/internal/domain/repo"
 )
 
+// DeckService handle business logic for Deck and Card entity
 type DeckService struct {
 	Repository repo.DeckRepo
 }
@@ -17,13 +18,14 @@ func NewDeckService(repository repo.DeckRepo) *DeckService {
 }
 
 func (s *DeckService) CreateDeck(name string, cards []*model.Card) (*model.Deck, error) {
-	deck := &model.Deck{
-		Name:  name,
-		Cards: cards,
+	deck, err := model.NewDeck(name)
+	if err != nil {
+		return nil, fmt.Errorf("invalid deck data: %w", err)
 	}
 
+	// persist the entity
 	if err := s.Repository.Save(deck); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create deck: %w", err)
 	}
 
 	return deck, nil
@@ -100,12 +102,14 @@ func (s *DeckService) UpdateCard(deckID uint, cardID uint, front string, back st
 	return nil
 }
 
+// FindAllCards retrieves all cards for the given deckID.
 func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
 	deck, err := s.Repository.FindByID(deckID)
 	if err != nil {
 		return nil, err
 	}
-	return deck.Cards, nil
+
+	return deck.Cards(), nil
 }
 
 func (s *DeckService) UpdateDeck(deckID uint, name string, updatedCards []*model.Card) error {
