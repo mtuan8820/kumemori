@@ -118,7 +118,7 @@ func (s *DeckService) UpdateDeck(deckID uint, name string, updatedCards []*model
 		return fmt.Errorf("deck not found: %w", err)
 	}
 
-	deck.UpdateName(name)
+	deck.Rename(name)
 	for _, uc := range updatedCards {
 		if err := s.Repository.SaveCard(uc); err != nil {
 			return err

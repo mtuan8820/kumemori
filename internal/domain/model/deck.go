@@ -1,9 +1,12 @@
 package model
 
 import (
-	"errors"
 	"time"
 )
+
+const DeckNameTextLength = 100
+const MaxCardTextLength = 1000
+const DeckCardLimit = 100
 
 // Card entity
 type Card struct {
@@ -37,16 +40,16 @@ type Deck struct {
 
 // NewDeck creates a new deck entity with validation
 func NewDeck(name string) (*Deck, error) {
-	if name == "" {
-		return nil, ErrEmptyDeckName
+	if err := validateDeckName(name); err != nil {
+		return nil, err
 	}
 
 	deck := &Deck{
 		Name:          name,
 		CreatedAt:     time.Now(),
 		UpdatedAt:     time.Now(),
-		NewCardLimit:  200, //temporally set equal 200
-		ReviewLimit:   0,   //temporally set equal 0
+		NewCardLimit:  DeckCardLimit, //temporally set equal 200
+		ReviewLimit:   0,             //temporally set equal 0
 		LastStudiedAt: time.Time{},
 		cards:         make([]*Card, 0),
 	}
@@ -54,9 +57,25 @@ func NewDeck(name string) (*Deck, error) {
 	return deck, nil
 }
 
-// ---- Aggregate behavior methods ----
+func validateDeckName(name string) error {
+	if name == "" {
+		return ErrEmptyDeckName
+	}
 
+	if len(name) > DeckNameTextLength {
+		return ErrDeckNameTooLong
+	}
+
+	return nil
+}
+
+// ---- Aggregate behavior methods ----
+// CreateCard creates a new card entity and assign to deck
 func (d *Deck) CreateCard(front string, back string) (*Card, error) {
+	if err := d.validateCard(front, back); err != nil {
+		return nil, err
+	}
+
 	card := Card{
 		DeckID:       d.ID,
 		Front:        front,
@@ -70,7 +89,6 @@ func (d *Deck) CreateCard(front string, back string) (*Card, error) {
 		LastReviewed: time.Time{},
 	}
 
-	// Add to collection nếu Deck giữ cards trong memory
 	d.cards = append(d.cards, &card)
 
 	return &card, nil
@@ -79,7 +97,7 @@ func (d *Deck) CreateCard(front string, back string) (*Card, error) {
 // AddCard adds a card to the deck
 func (d *Deck) AddCard(card Card) error {
 	if d.NewCardLimit > 0 && len(d.cards) >= d.NewCardLimit {
-		return errors.New("deck has reached new card limit")
+		return ErrDeckCardLimit
 	}
 	card.DeckID = d.ID
 	card.CreatedAt = time.Now()
@@ -89,6 +107,14 @@ func (d *Deck) AddCard(card Card) error {
 
 // UpdateCard updates the content of a card
 func (d *Deck) UpdateCard(cardID uint, front, back string) error {
+	if cardID == 0 {
+		return ErrInvalidID
+	}
+
+	if err := d.validateCard(front, back); err != nil {
+		return err
+	}
+
 	for i, c := range d.cards {
 		if c.ID == cardID {
 			d.cards[i].Front = front
@@ -96,18 +122,25 @@ func (d *Deck) UpdateCard(cardID uint, front, back string) error {
 			return nil
 		}
 	}
-	return errors.New("card not found")
+	return ErrCardNotFound
 }
 
-// RemoveCard removes a card by ID
 func (d *Deck) RemoveCard(cardID uint) error {
+	if len(d.cards) == 1 {
+		return ErrDeckHaveAtLeastOneCard
+	}
+
+	if cardID == 0 {
+		return ErrInvalidID
+	}
+
 	for i, c := range d.cards {
 		if c.ID == cardID {
 			d.cards = append(d.cards[:i], d.cards[i+1:]...)
 			return nil
 		}
 	}
-	return errors.New("card not found")
+	return ErrCardNotFound
 }
 
 // FindCard returns a pointer to a card by ID
@@ -117,26 +150,36 @@ func (d *Deck) FindCard(cardID uint) (*Card, error) {
 			return d.cards[i], nil
 		}
 	}
-	return nil, errors.New("card not found")
+	return nil, ErrCardNotFound
 }
 
-func (d *Deck) UpdateName(name string) error {
-	if err := validateName(name); err != nil {
+func (d *Deck) Rename(name string) error {
+	if err := validateDeckName(name); err != nil {
 		return err
 	}
 	d.Name = name
 	return nil
 }
 
-func validateName(name string) error {
-	if name == "" {
-		return errors.New("name cannot be empty")
-	}
-	return nil
-}
-
+// Cards return a copy of cards belong to deck
 func (d *Deck) Cards() []*Card {
 	cardsCopy := make([]*Card, len(d.cards))
 	copy(cardsCopy, d.cards)
 	return cardsCopy
+}
+
+func (d *Deck) validateCard(front string, back string) error {
+	if front == "" {
+		return ErrEmptyCardFront
+	}
+
+	if len(front) > MaxCardTextLength {
+		return ErrCardFrontTooLong
+	}
+
+	if len(back) > MaxCardTextLength {
+		return ErrCardBackTooLong
+	}
+
+	return nil
 }
