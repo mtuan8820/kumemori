@@ -65,7 +65,6 @@ export namespace model {
 	    ReviewLimit: number;
 	    // Go type: time
 	    LastStudiedAt: any;
-	    Cards: Card[];
 	
 	    static createFrom(source: any = {}) {
 	        return new Deck(source);
@@ -81,7 +80,6 @@ export namespace model {
 	        this.NewCardLimit = source["NewCardLimit"];
 	        this.ReviewLimit = source["ReviewLimit"];
 	        this.LastStudiedAt = this.convertValues(source["LastStudiedAt"], null);
-	        this.Cards = this.convertValues(source["Cards"], Card);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

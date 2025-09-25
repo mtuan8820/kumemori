@@ -26,9 +26,19 @@ func (d *DeckRepo) Save(deck *model.Deck) error {
 // find deck by ID (including cards)
 func (d *DeckRepo) FindByID(id uint) (*model.Deck, error) {
 	var deck model.Deck
-	if err := d.db.Preload("Cards").First(&deck, "id=?", id).Error; err != nil {
+	if err := d.db.First(&deck, "id=?", id).Error; err != nil {
 		return nil, err
 	}
+
+	var cards []*model.Card
+	if err := d.db.Find(&cards).Where("deckId=?", id).Error; err != nil {
+		return nil, err
+	}
+
+	for _, card := range cards {
+		deck.AddCard(*card)
+	}
+
 	return &deck, nil
 }
 
@@ -57,7 +67,7 @@ func (d *DeckRepo) SaveCard(card *model.Card) error {
 		return fmt.Errorf("card must belong to existing deck: %w", err)
 	}
 
-	if err := d.db.Save(card).Error; err != nil {
+	if err := d.db.Save(&card).Error; err != nil {
 		return fmt.Errorf("failed to save card: %w", err)
 	}
 

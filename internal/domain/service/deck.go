@@ -116,13 +116,19 @@ func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
 }
 
 func (s *DeckService) UpdateDeck(deckID uint, name string, updatedCards []*model.Card) error {
+
 	deck, err := s.Repository.FindByID(deckID)
 	if err != nil {
 		return fmt.Errorf("deck not found: %w", err)
 	}
 
 	deck.Rename(name)
+
 	for _, uc := range updatedCards {
+		if err := deck.UpdateCard(uc.ID, uc.Front, uc.Back); err != nil {
+			return err
+		}
+
 		if err := s.Repository.SaveCard(uc); err != nil {
 			return err
 		}

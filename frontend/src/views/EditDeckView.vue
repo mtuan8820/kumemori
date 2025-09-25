@@ -14,7 +14,7 @@ const props = defineProps<EditDeckViewProps>()
 
 const deckId = Number(props.id)
 
-const { cardItems, createCardItem, deleteCardItem, submitUpdateDeck } = useEditDeckViewModel(deckId)
+const { name: deckName , cardItems, createCardItem, deleteCardItem, submitUpdateDeck } = useEditDeckViewModel(deckId, props.name)
 
 
 
@@ -23,13 +23,13 @@ const { cardItems, createCardItem, deleteCardItem, submitUpdateDeck } = useEditD
     <form>
         <div class="flex justify-between sticky top-0 z-10 bg-light py-2">
             <div>
-                <h1>Edit deck</h1>
+                <input name="deckName"  v-model="deckName">
 
             </div>
             <div class="flex justify-end gap-2">
                 <button @click="$router.back()">Cancel</button>
 
-                <button @click="submitUpdateDeck('')">Save</button>
+                <button @click="submitUpdateDeck()">Save</button>
             </div>
         </div>
 
