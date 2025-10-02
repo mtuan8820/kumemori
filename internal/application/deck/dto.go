@@ -1,15 +1,18 @@
 package deck
 
-import "kumemori/internal/application/core"
+import (
+	"kumemori/internal/application/core"
+	"kumemori/internal/domain/model"
+)
 
 const DeckNameTextLength = 100
 const MaxCardTextLength = 1000
 const DeckCardLimit = 100
 
-// EditInput represents input for updating a deck
-type EditInput struct {
+// UpdateInput represents input for updating a deck
+type UpdateInput struct {
 	core.BaseInput
-	ID            string            `json:"id"`             // deck id
+	ID            uint              `json:"id"`             // deck id
 	Name          string            `json:"name,omitempty"` // deck name
 	CurrLength    int               `json:"curLength"`      // current number of cards
 	CardsToAdd    []CreateCardInput `json:"cardsToAdd,omitempty"`
@@ -23,12 +26,12 @@ type CreateCardInput struct {
 }
 
 type UpdateCardInput struct {
-	ID    uint    `json:"id"`
-	Front *string `json:"front"`
-	Back  *string `json:"back,omitempty"`
+	ID    uint   `json:"id"`
+	Front string `json:"front"`
+	Back  string `json:"back,omitempty"`
 }
 
-func (i *EditInput) Validate() error {
+func (i *UpdateInput) Validate() error {
 	if i.Name == "" {
 		return core.ValidationError("name is required", map[string]any{
 			"name": "required",
@@ -46,7 +49,7 @@ func (i *EditInput) Validate() error {
 	}
 
 	for _, card := range i.CardsToUpdate {
-		if err := validateCard(*card.Front, *card.Back); err != nil {
+		if err := validateCard(card.Front, card.Back); err != nil {
 			return err
 		}
 	}
@@ -65,4 +68,26 @@ func validateCard(front string, back string) error {
 		return core.ValidationError("card back too long", map[string]any{"back": "too long"})
 	}
 	return nil
+}
+
+func (i *UpdateInput) ToDomain() ([]model.Card, []model.Card) {
+	cardsToAdd := make([]model.Card, 0, len(i.CardsToAdd))
+	for _, card := range i.CardsToAdd {
+		cardsToAdd = append(cardsToAdd, model.Card{
+			DeckID: i.ID,
+			Front:  card.Front,
+			Back:   card.Back,
+		})
+	}
+
+	cardsToUpdate := make([]model.Card, 0, len(i.CardsToUpdate))
+	for _, card := range i.CardsToUpdate {
+		cardsToUpdate = append(cardsToUpdate, model.Card{
+			DeckID: i.ID,
+			Front:  card.Front,
+			Back:   card.Back,
+		})
+	}
+
+	return cardsToAdd, cardsToUpdate
 }

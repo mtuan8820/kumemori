@@ -2,12 +2,16 @@ package boostrap
 
 import (
 	"fmt"
+	"kumemori/internal/adapter/repository"
 	"kumemori/internal/adapter/repository/sqlite"
+	"kumemori/internal/application"
+
 	"kumemori/internal/domain/service"
 )
 
 type AppDependencies struct {
 	DeckService *service.DeckService
+	Factory     *application.Factory
 }
 
 func InitApp() (*AppDependencies, error) {
@@ -20,7 +24,12 @@ func InitApp() (*AppDependencies, error) {
 
 	deckService := service.NewDeckService(deckRepo)
 
+	txFactory := repository.NewGormTransactionFactory(db)
+
+	factory := application.NewFactory(deckService, txFactory)
+
 	return &AppDependencies{
 		DeckService: deckService,
+		Factory:     factory,
 	}, nil
 }

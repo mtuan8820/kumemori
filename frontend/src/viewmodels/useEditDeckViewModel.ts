@@ -1,5 +1,5 @@
 import { onMounted, ref } from "vue";
-import { FindAllCards, UpdateDeck } from "../../wailsjs/go/service/DeckService";
+import { FindAllCards, Update } from "../../wailsjs/go/service/DeckService";
 import type { model } from "../../wailsjs/go/models";
 import router from "@/router";
 
@@ -77,7 +77,7 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                 convertValues: () => { }
             }))
 
-            await UpdateDeck(deckId, name.value, deckCards)
+            // await Update(deckId, name.value, deckCards)
 
             router.back()
         }
