@@ -34,8 +34,8 @@ export function Save(arg1) {
   return window['go']['service']['DeckService']['Save'](arg1);
 }
 
-export function Update(arg1, arg2, arg3, arg4, arg5) {
-  return window['go']['service']['DeckService']['Update'](arg1, arg2, arg3, arg4, arg5);
+export function Update(arg1, arg2, arg3, arg4) {
+  return window['go']['service']['DeckService']['Update'](arg1, arg2, arg3, arg4);
 }
 
 export function UpdateCard(arg1, arg2, arg3, arg4) {

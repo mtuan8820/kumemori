@@ -9,7 +9,7 @@ type IDeckService interface {
 	Delete(id uint) error
 	Save(deck *model.Deck) error
 	FindById(id uint) (*model.Deck, error)
-	Update(deckID uint, name string, cardsToAdd []model.Card, cardsToDelete []uint, cardsToUpdate []model.Card) error
+	Update(deckID uint, name string, cards []model.Card, actions []string) error
 
 	AddCard(deckID uint, card model.Card) error
 	DeleteCard(deckID uint, cardID uint) error
