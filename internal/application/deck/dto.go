@@ -15,20 +15,14 @@ type UpdateInput struct {
 	ID            uint              `json:"id"`             // deck id
 	Name          string            `json:"name,omitempty"` // deck name
 	CurrLength    int               `json:"curLength"`      // current number of cards
-	CardsToAdd    []CreateCardInput `json:"cardsToAdd,omitempty"`
 	CardsToUpdate []UpdateCardInput `json:"cardsToUpdate,omitempty"`
-	CardsToDelete []uint            `json:"cardsToDelete,omitempty"`
-}
-
-type CreateCardInput struct {
-	Front string `json:"front"`
-	Back  string `json:"back,omitempty"`
 }
 
 type UpdateCardInput struct {
-	ID    uint   `json:"id"`
-	Front string `json:"front"`
-	Back  string `json:"back,omitempty"`
+	ID     uint   `json:"id"`
+	Front  string `json:"front"`
+	Back   string `json:"back,omitempty"`
+	Action string `json:"action"`
 }
 
 func (i *UpdateInput) Validate() error {
@@ -36,16 +30,6 @@ func (i *UpdateInput) Validate() error {
 		return core.ValidationError("name is required", map[string]any{
 			"name": "required",
 		})
-	}
-
-	if i.CurrLength-len(i.CardsToDelete)+len(i.CardsToUpdate) > DeckCardLimit {
-		return core.ValidationError("exceed card limit", map[string]any{"card limit": "exceed"})
-	}
-
-	for _, card := range i.CardsToAdd {
-		if err := validateCard(card.Front, card.Back); err != nil {
-			return err
-		}
 	}
 
 	for _, card := range i.CardsToUpdate {
@@ -70,24 +54,18 @@ func validateCard(front string, back string) error {
 	return nil
 }
 
-func (i *UpdateInput) ToDomain() ([]model.Card, []model.Card) {
-	cardsToAdd := make([]model.Card, 0, len(i.CardsToAdd))
-	for _, card := range i.CardsToAdd {
-		cardsToAdd = append(cardsToAdd, model.Card{
-			DeckID: i.ID,
-			Front:  card.Front,
-			Back:   card.Back,
-		})
-	}
+func (i *UpdateInput) ToDomain() ([]model.Card, []string) {
 
 	cardsToUpdate := make([]model.Card, 0, len(i.CardsToUpdate))
+	actions := make([]string, 0, len(i.CardsToUpdate))
 	for _, card := range i.CardsToUpdate {
 		cardsToUpdate = append(cardsToUpdate, model.Card{
 			DeckID: i.ID,
 			Front:  card.Front,
 			Back:   card.Back,
 		})
+		actions = append(actions, card.Action)
 	}
 
-	return cardsToAdd, cardsToUpdate
+	return cardsToUpdate, actions
 }
