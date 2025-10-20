@@ -1,6 +1,7 @@
 package boostrap
 
 import (
+	"context"
 	"fmt"
 	"kumemori/internal/adapter/repository"
 	"kumemori/internal/adapter/repository/sqlite"
@@ -14,7 +15,7 @@ type AppDependencies struct {
 	Factory     *application.Factory
 }
 
-func InitApp() (*AppDependencies, error) {
+func InitApp(ctx context.Context) (*AppDependencies, error) {
 	db, err := sqlite.InitDb()
 	if err != nil {
 		return nil, fmt.Errorf("init db failed: %w", err)
@@ -26,7 +27,7 @@ func InitApp() (*AppDependencies, error) {
 
 	txFactory := repository.NewGormTransactionFactory(db)
 
-	factory := application.NewFactory(deckService, txFactory)
+	factory := application.NewFactory(ctx, deckService, txFactory)
 
 	return &AppDependencies{
 		DeckService: deckService,

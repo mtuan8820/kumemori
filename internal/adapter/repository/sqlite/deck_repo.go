@@ -1,6 +1,7 @@
 package sqlite
 
 import (
+	"context"
 	"fmt"
 	"kumemori/internal/domain/model"
 
@@ -16,7 +17,7 @@ func NewDeckRepo(db *gorm.DB) *DeckRepo {
 }
 
 // create a new deck with cards
-func (d *DeckRepo) Save(deck *model.Deck) error {
+func (d *DeckRepo) Save(ctx context.Context, deck *model.Deck) error {
 	if err := d.db.Save(&deck).Error; err != nil {
 		return fmt.Errorf("failed to save deck: %w", err)
 	}
@@ -24,7 +25,7 @@ func (d *DeckRepo) Save(deck *model.Deck) error {
 }
 
 // find deck by ID (including cards)
-func (d *DeckRepo) FindByID(id uint) (*model.Deck, error) {
+func (d *DeckRepo) FindByID(ctx context.Context, id uint) (*model.Deck, error) {
 	var deck model.Deck
 	if err := d.db.First(&deck, "id=?", id).Error; err != nil {
 		return nil, err
@@ -43,7 +44,7 @@ func (d *DeckRepo) FindByID(id uint) (*model.Deck, error) {
 }
 
 // find all decks (not include cards)
-func (d *DeckRepo) FindAll() ([]*model.Deck, error) {
+func (d *DeckRepo) FindAll(ctx context.Context) ([]*model.Deck, error) {
 	var decks []*model.Deck
 	err := d.db.Find(&decks).Error
 	if err != nil {
@@ -53,7 +54,7 @@ func (d *DeckRepo) FindAll() ([]*model.Deck, error) {
 }
 
 // delete a deck (also cascade delete its card)
-func (d *DeckRepo) Delete(id uint) error {
+func (d *DeckRepo) Delete(ctx context.Context, id uint) error {
 	if err := d.db.Delete(&model.Deck{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete deck with id %d: %w", id, err)
 	}
@@ -61,7 +62,7 @@ func (d *DeckRepo) Delete(id uint) error {
 	return nil
 }
 
-func (d *DeckRepo) SaveCard(card *model.Card) error {
+func (d *DeckRepo) SaveCard(ctx context.Context, card *model.Card) error {
 	var deck model.Deck
 	if err := d.db.First(&deck, "id = ?", card.DeckID).Error; err != nil {
 		return fmt.Errorf("card must belong to existing deck: %w", err)

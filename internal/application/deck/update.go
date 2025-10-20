@@ -5,9 +5,12 @@ import (
 	"kumemori/internal/application/core"
 	"kumemori/internal/domain/repo"
 	"kumemori/internal/domain/service"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 type UpdateUseCase struct {
+	ctx context.Context
 	*core.UseCaseHandler
 	deckService service.IDeckService
 }
@@ -16,7 +19,7 @@ type UpdateUseCase struct {
 var _ core.UseCase = (*UpdateUseCase)(nil)
 
 func NewUpdateUseCase(
-	deckService service.IDeckService, txFactory repo.TransactionFactory,
+	ctx context.Context, deckService service.IDeckService, txFactory repo.TransactionFactory,
 ) *UpdateUseCase {
 	return &UpdateUseCase{
 		UseCaseHandler: core.NewUseCaseHandler(txFactory),
@@ -24,11 +27,12 @@ func NewUpdateUseCase(
 	}
 }
 
-func (uc *UpdateUseCase) Execute(ctx context.Context, input any) (any, error) {
-	// covert and validate input
-	updateInput, ok := input.(*UpdateInput)
-	if !ok {
-		return nil, core.ValidationError("invalid input type", nil)
+func (uc *UpdateUseCase) Execute(input any) (any, error) {
+	var updateInput UpdateInput
+
+	// Decode map[string]interface{} → struct
+	if err := mapstructure.Decode(input, &updateInput); err != nil {
+		return nil, core.ValidationError("invalid update input data", nil)
 	}
 
 	if err := updateInput.Validate(); err != nil {
@@ -36,18 +40,18 @@ func (uc *UpdateUseCase) Execute(ctx context.Context, input any) (any, error) {
 	}
 
 	// convert updateInput to card domain entity
-	cardsToAdd, _ := updateInput.ToDomain()
+	cardsToUpdate, actions := updateInput.ToDomain()
 
 	// execute in transaction
-	result, err := uc.ExecuteInTransaction(ctx, func(ctx context.Context, tx repo.Transaction) (any, error) {
+	result, err := uc.ExecuteInTransaction(uc.ctx, func(ctx context.Context, tx repo.Transaction) (any, error) {
 		// call domain service to update deck
-		err := uc.deckService.Update(updateInput.ID, updateInput.Name, cardsToAdd, []string{"abc"})
+		err := uc.deckService.Update(uc.ctx, updateInput.ID, updateInput.Name, cardsToUpdate, actions)
 		if err != nil {
 			return nil, err
 		}
 
 		// get the updated deck
-		_, err = uc.deckService.FindById(updateInput.ID)
+		_, err = uc.deckService.FindById(uc.ctx, updateInput.ID)
 		if err != nil {
 			return nil, err
 		}

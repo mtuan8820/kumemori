@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"context"
 	"errors"
 	"kumemori/internal/domain/model"
 	"kumemori/internal/domain/service"
@@ -14,28 +15,28 @@ type MockDeckRepo struct {
 	mock.Mock
 }
 
-func (m *MockDeckRepo) Save(deck *model.Deck) error {
-	args := m.Called(deck)
+func (m *MockDeckRepo) Save(ctx context.Context, deck *model.Deck) error {
+	args := m.Called(ctx, deck)
 	return args.Error(0)
 }
 
-func (m *MockDeckRepo) FindByID(id uint) (*model.Deck, error) {
-	args := m.Called(id)
+func (m *MockDeckRepo) FindByID(ctx context.Context, id uint) (*model.Deck, error) {
+	args := m.Called(ctx, id)
 	return args.Get(0).(*model.Deck), args.Error(1)
 }
 
-func (m *MockDeckRepo) FindAll() ([]*model.Deck, error) {
-	args := m.Called()
+func (m *MockDeckRepo) FindAll(ctx context.Context) ([]*model.Deck, error) {
+	args := m.Called(ctx)
 	return args.Get(0).([]*model.Deck), args.Error(1)
 }
 
-func (m *MockDeckRepo) Delete(id uint) error {
-	args := m.Called(id)
+func (m *MockDeckRepo) Delete(ctx context.Context, id uint) error {
+	args := m.Called(ctx, id)
 	return args.Error(0)
 }
 
-func (m *MockDeckRepo) SaveCard(card *model.Card) error {
-	args := m.Called(card)
+func (m *MockDeckRepo) SaveCard(ctx context.Context, card *model.Card) error {
+	args := m.Called(ctx, card)
 	return args.Error(0)
 }
 
@@ -55,7 +56,7 @@ func TestUpdate_DeckNotFound(t *testing.T) {
 
 	mockRepo.On("FindByID", uint(1)).Return((*model.Deck)(nil), errors.New("not found"))
 
-	err := svc.Update(1, "NewName", nil, nil)
+	err := svc.Update(context.TODO(), 1, "NewName", nil, nil)
 
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "deck not found")
@@ -67,12 +68,12 @@ func TestUpdate_AddCard(t *testing.T) {
 	svc := service.NewDeckService(mockRepo)
 
 	deck := mustNewDeck("Deck1")
-
-	mockRepo.On("FindByID", uint(1)).Return(deck, nil)
-	mockRepo.On("Save", mock.AnythingOfType("*model.Deck")).Return(nil)
+	mockRepo.On("FindByID", mock.Anything, uint(1)).Return(deck, nil)
+	mockRepo.On("Save", mock.Anything, mock.AnythingOfType("*model.Deck")).Return(nil)
 
 	card := model.Card{Front: "Q", Back: "A"}
-	err := svc.Update(1, "Deck1", []model.Card{card}, []string{"add"})
+
+	err := svc.Update(context.TODO(), 1, "Deck1", []model.Card{card}, []string{"add"})
 
 	assert.NoError(t, err)
 	assert.Len(t, deck.Cards(), 1)

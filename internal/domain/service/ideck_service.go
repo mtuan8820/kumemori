@@ -1,18 +1,21 @@
 package service
 
-import "kumemori/internal/domain/model"
+import (
+	"context"
+	"kumemori/internal/domain/model"
+)
 
 // IDeckService define interface for deck service
 type IDeckService interface {
-	CreateDeck(name string, cards []*model.Card) (*model.Deck, error)
-	GetDecks() ([]*model.Deck, error)
-	Delete(id uint) error
-	Save(deck *model.Deck) error
-	FindById(id uint) (*model.Deck, error)
-	Update(deckID uint, name string, cards []model.Card, actions []string) error
+	CreateDeck(ctx context.Context, name string, cards []*model.Card) (*model.Deck, error)
+	GetDecks(ctx context.Context) ([]*model.Deck, error)
+	Delete(ctx context.Context, id uint) error
+	Save(ctx context.Context, deck *model.Deck) error
+	FindById(ctx context.Context, id uint) (*model.Deck, error)
+	Update(ctx context.Context, deckID uint, name string, cards []model.Card, actions []string) error
 
-	AddCard(deckID uint, card model.Card) error
-	DeleteCard(deckID uint, cardID uint) error
-	UpdateCard(deckID uint, cardID uint, front string, back string) error
-	FindAllCards(deckID uint) ([]*model.Card, error)
+	AddCard(ctx context.Context, deckID uint, card model.Card) error
+	DeleteCard(ctx context.Context, deckID uint, cardID uint) error
+	UpdateCard(ctx context.Context, deckID uint, cardID uint, front string, back string) error
+	FindAllCards(ctx context.Context, deckID uint) ([]*model.Card, error)
 }

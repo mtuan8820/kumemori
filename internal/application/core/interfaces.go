@@ -2,13 +2,14 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"kumemori/internal/domain/repo"
 	"kumemori/internal/util/errors"
 )
 
 type UseCase interface {
 	// Execute processes the use case with the given input and returns the result or an error
-	Execute(ctx context.Context, input any) (any, error)
+	Execute(input any) (any, error)
 }
 
 type UseCaseHandler struct {
@@ -31,11 +32,19 @@ func (h *UseCaseHandler) ExecuteInTransaction(
 	if err != nil {
 		return nil, errors.Wrapf(err, errors.ErrorTypeSystem, "failed to create transaction")
 	}
-	defer func() { _ = tx.Rollback() }()
+	// committed := false
+	// defer func() {
+	// 	if !committed {
+	// 		_ = tx.Rollback()
+	// 	}
+	// }()
 
 	// Execute function within transaction
 	result, err := fn(ctx, tx)
 	if err != nil {
+		if rerr := tx.Rollback(); rerr != nil {
+			fmt.Println("rollback error:", rerr)
+		}
 		return nil, err
 	}
 
@@ -43,6 +52,7 @@ func (h *UseCaseHandler) ExecuteInTransaction(
 	if err = tx.Commit(); err != nil {
 		return nil, errors.Wrapf(err, errors.ErrorTypeSystem, "failed to commit transaction")
 	}
+	// committed = true
 
 	return result, nil
 }

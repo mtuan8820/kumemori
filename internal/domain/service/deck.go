@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"kumemori/internal/domain/model"
 	"kumemori/internal/domain/repo"
@@ -20,40 +21,40 @@ func NewDeckService(repository repo.DeckRepo) *DeckService {
 	}
 }
 
-func (s *DeckService) CreateDeck(name string, cards []*model.Card) (*model.Deck, error) {
+func (s *DeckService) CreateDeck(ctx context.Context, name string, cards []*model.Card) (*model.Deck, error) {
 	deck, err := model.NewDeck(name)
 	if err != nil {
 		return nil, fmt.Errorf("invalid deck data: %w", err)
 	}
 
 	// persist the entity
-	if err := s.Repository.Save(deck); err != nil {
+	if err := s.Repository.Save(ctx, deck); err != nil {
 		return nil, fmt.Errorf("failed to create deck: %w", err)
 	}
 
 	return deck, nil
 }
 
-func (s *DeckService) GetDecks() ([]*model.Deck, error) {
-	return s.Repository.FindAll()
+func (s *DeckService) GetDecks(ctx context.Context) ([]*model.Deck, error) {
+	return s.Repository.FindAll(ctx)
 }
 
-func (s *DeckService) Delete(id uint) error {
-	return s.Repository.Delete(id)
+func (s *DeckService) Delete(ctx context.Context, id uint) error {
+	return s.Repository.Delete(ctx, id)
 }
 
-func (s *DeckService) Save(deck *model.Deck) error {
-	return s.Repository.Save(deck)
+func (s *DeckService) Save(ctx context.Context, deck *model.Deck) error {
+	return s.Repository.Save(ctx, deck)
 }
 
-func (s *DeckService) FindById(id uint) (*model.Deck, error) {
-	return s.Repository.FindByID(id)
+func (s *DeckService) FindById(ctx context.Context, id uint) (*model.Deck, error) {
+	return s.Repository.FindByID(ctx, id)
 }
 
 // CRUD card
 
-func (s *DeckService) AddCard(deckID uint, card model.Card) error {
-	deck, err := s.Repository.FindByID(deckID)
+func (s *DeckService) AddCard(ctx context.Context, deckID uint, card model.Card) error {
+	deck, err := s.Repository.FindByID(ctx, deckID)
 	if err != nil {
 		return err
 	}
@@ -64,15 +65,15 @@ func (s *DeckService) AddCard(deckID uint, card model.Card) error {
 		return err
 	}
 
-	if err := s.Repository.Save(deck); err != nil {
+	if err := s.Repository.Save(ctx, deck); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *DeckService) DeleteCard(deckID uint, cardID uint) error {
-	deck, err := s.Repository.FindByID(deckID)
+func (s *DeckService) DeleteCard(ctx context.Context, deckID uint, cardID uint) error {
+	deck, err := s.Repository.FindByID(ctx, deckID)
 	if err != nil {
 		return err
 	}
@@ -81,15 +82,15 @@ func (s *DeckService) DeleteCard(deckID uint, cardID uint) error {
 		return err
 	}
 
-	if err := s.Repository.Save(deck); err != nil {
+	if err := s.Repository.Save(ctx, deck); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *DeckService) UpdateCard(deckID uint, cardID uint, front string, back string) error {
-	deck, err := s.Repository.FindByID(deckID)
+func (s *DeckService) UpdateCard(ctx context.Context, deckID uint, cardID uint, front string, back string) error {
+	deck, err := s.Repository.FindByID(ctx, deckID)
 	if err != nil {
 		return err
 	}
@@ -98,7 +99,7 @@ func (s *DeckService) UpdateCard(deckID uint, cardID uint, front string, back st
 		return err
 	}
 
-	if err := s.Repository.Save(deck); err != nil {
+	if err := s.Repository.Save(ctx, deck); err != nil {
 		return err
 	}
 
@@ -106,8 +107,8 @@ func (s *DeckService) UpdateCard(deckID uint, cardID uint, front string, back st
 }
 
 // FindAllCards retrieves all cards for the given deckID.
-func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
-	deck, err := s.Repository.FindByID(deckID)
+func (s *DeckService) FindAllCards(ctx context.Context, deckID uint) ([]*model.Card, error) {
+	deck, err := s.Repository.FindByID(ctx, deckID)
 	if err != nil {
 		return nil, err
 	}
@@ -115,9 +116,9 @@ func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
 	return deck.Cards(), nil
 }
 
-func (s *DeckService) Update(deckID uint, name string, cards []model.Card, actions []string) error {
+func (s *DeckService) Update(ctx context.Context, deckID uint, name string, cards []model.Card, actions []string) error {
 
-	deck, err := s.Repository.FindByID(deckID)
+	deck, err := s.Repository.FindByID(ctx, deckID)
 	if err != nil {
 		return fmt.Errorf("deck not found: %w", err)
 	}
@@ -141,7 +142,7 @@ func (s *DeckService) Update(deckID uint, name string, cards []model.Card, actio
 		}
 	}
 
-	if err := s.Repository.Save(deck); err != nil {
+	if err := s.Repository.Save(ctx, deck); err != nil {
 		return fmt.Errorf("failed to save deck: %w", err)
 	}
 
