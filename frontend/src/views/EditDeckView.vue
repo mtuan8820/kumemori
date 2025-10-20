@@ -39,7 +39,7 @@ const { name: deckName , cardItems, createCardItem, deleteCardItem, submitUpdate
                     {{ index + 1 }}
                 </div>
 
-                <button @click="deleteCardItem(index)">
+                <button @click="deleteCardItem(index, card.id)">
                     <TrashIcon class="w-5 h-5 deleteicon " />
                 </button>
             </div>

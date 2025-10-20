@@ -1,6 +1,7 @@
 import { onMounted, ref } from "vue";
-import { FindAllCards, Update } from "../../wailsjs/go/service/DeckService";
-import type { model } from "../../wailsjs/go/models";
+import { FindAllCards } from "../../wailsjs/go/service/DeckService";
+import { NewUpdateCardInput, NewUpdateInput, UpdateDeck } from "../../wailsjs/go/application/Factory";
+
 import router from "@/router";
 
 interface CardItem {
@@ -9,6 +10,8 @@ interface CardItem {
     back: string,
     frontErrorMsg: string,
     backErrorMsg: string,
+    action: string,
+    visible: boolean,
 }
 
 export function useEditDeckViewModel(deckId: number, deckName: string | null | undefined) {
@@ -33,27 +36,29 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                 front: card.Front,
                 back: card.Back,
                 frontErrorMsg: "",
-                backErrorMsg: ""
+                backErrorMsg: "", 
+                action: "not changed",
+                visible: true
             }))
         ).catch(
             error => {
                 console.error('Error:', error);
             })
-
     })
 
     const createCardItem = () => {
-        cardItems.value = [...cardItems.value, { id: 0, front: "", back: "", frontErrorMsg: "", backErrorMsg: "" }]
+        cardItems.value = [...cardItems.value, { id: 0, front: "", back: "", frontErrorMsg: "", backErrorMsg: "" , action: "add", visible: true}]
         // can remove card item if current quantity >= 2
         disableDeleteCardItem.value = false
     }
 
-    const deleteCardItem = (index: number) => {
-        cardItems.value.splice(index, 1)
+    const deleteCardItem = (index: number, id: number) => {
         // make sure Card Item at least 1
         if (cardItems.value.length <= 1) {
             disableDeleteCardItem.value = true
         }
+        cardItems.value[index].visible = false
+        cardItems.value[index].action = "delete"
     }
 
     const submitUpdateDeck = async () => {
@@ -62,22 +67,11 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                 console.log("deck name must not be empty")
                 return
             } 
-            const deckCards: model.Card[] = cardItems.value.map(item => ({
-                ID: item.id,
-                DeckID: deckId,
-                Front: item.front,
-                Back: item.back,
-                CreatedAt: null,
-                Repetitions: 0,
-                Lapses: 0,
-                EaseFactor: 0,
-                Interval: 0,
-                Due: null,
-                LastReviewed: null,
-                convertValues: () => { }
-            }))
 
-            // await Update(deckId, name.value, deckCards)
+            const updateCardList = await Promise.all(cardItems.value.map(card=>NewUpdateCardInput(card.id, card.front, card.back, card.action)))
+            const updateInput = await NewUpdateInput(deckId, deckName??'', updateCardList.length, updateCardList)
+
+            await UpdateDeck(updateInput)
 
             router.back()
         }
