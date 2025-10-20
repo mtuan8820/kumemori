@@ -12,6 +12,9 @@ type UpdateUseCase struct {
 	deckService service.IDeckService
 }
 
+// make sure UpdateUseCase implement UseCase interface
+var _ core.UseCase = (*UpdateUseCase)(nil)
+
 func NewUpdateUseCase(
 	deckService service.IDeckService, txFactory repo.TransactionFactory,
 ) *UpdateUseCase {
@@ -33,12 +36,12 @@ func (uc *UpdateUseCase) Execute(ctx context.Context, input any) (any, error) {
 	}
 
 	// convert updateInput to card domain entity
-	cardsToAdd, cardsToUpdate := updateInput.ToDomain()
+	cardsToAdd, _ := updateInput.ToDomain()
 
 	// execute in transaction
 	result, err := uc.ExecuteInTransaction(ctx, func(ctx context.Context, tx repo.Transaction) (any, error) {
 		// call domain service to update deck
-		err := uc.deckService.Update(updateInput.ID, updateInput.Name, cardsToAdd, updateInput.CardsToDelete, cardsToUpdate)
+		err := uc.deckService.Update(updateInput.ID, updateInput.Name, cardsToAdd, []string{"abc"})
 		if err != nil {
 			return nil, err
 		}

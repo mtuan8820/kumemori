@@ -115,24 +115,31 @@ func (s *DeckService) FindAllCards(deckID uint) ([]*model.Card, error) {
 	return deck.Cards(), nil
 }
 
-func (s *DeckService) Update(deckID uint, name string, cardsToAdd []model.Card, cardsToDelete []uint, cardsToUpdate []model.Card) error {
+func (s *DeckService) Update(deckID uint, name string, cards []model.Card, actions []string) error {
 
 	deck, err := s.Repository.FindByID(deckID)
 	if err != nil {
 		return fmt.Errorf("deck not found: %w", err)
 	}
 
-	deck.Rename(name)
+	if deck.Name != name {
+		deck.Rename(name)
+	}
 
-	// for _, uc := range updatedCards {
-	// 	if err := deck.UpdateCard(uc.ID, uc.Front, uc.Back); err != nil {
-	// 		return err
-	// 	}
-
-	// 	if err := s.Repository.SaveCard(uc); err != nil {
-	// 		return err
-	// 	}
-	// }
+	for index, card := range cards {
+		switch actions[index] {
+		case "not changed":
+			continue
+		case "add":
+			deck.CreateCard(card.Front, card.Back)
+		case "delete":
+			deck.RemoveCard(card.ID)
+		case "update":
+			deck.UpdateCard(card.ID, card.Front, card.Back)
+		default:
+			return fmt.Errorf("invalid action: %s", actions[index])
+		}
+	}
 
 	if err := s.Repository.Save(deck); err != nil {
 		return fmt.Errorf("failed to save deck: %w", err)

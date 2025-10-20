@@ -35,6 +35,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 			deps.DeckService,
+			deps.Factory,
 		},
 	})
 

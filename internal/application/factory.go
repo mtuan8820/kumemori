@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"kumemori/internal/application/deck"
 	"kumemori/internal/domain/repo"
 	"kumemori/internal/domain/service"
@@ -24,6 +25,7 @@ func NewFactory(
 }
 
 // UpdateDeckUseCase returns a new update deck use case
-func (f *Factory) UpdateDeckUseCase() *deck.UpdateUseCase {
-	return deck.NewUpdateUseCase(f.deckService, f.txFactory)
+func (f *Factory) UpdateDeck(ctx context.Context, input any) (any, error) {
+	usecase := deck.NewUpdateUseCase(f.deckService, f.txFactory)
+	return usecase.Execute(ctx, input)
 }
