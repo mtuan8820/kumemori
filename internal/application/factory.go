@@ -27,6 +27,16 @@ func NewFactory(
 	}
 }
 
+func (f *Factory) GetAllDecks() (any, error) {
+	usecase := deck.NewGetAllUseCase(f.ctx, f.deckService, f.txFactory)
+	return usecase.Execute(nil)
+}
+
+func (f *Factory) GetCards(id uint) (any, error) {
+	usecase := deck.NewGetCardsUseCase(f.ctx, f.deckService, f.txFactory)
+	return usecase.Execute(id)
+}
+
 // UpdateDeckUseCase returns a new update deck use case
 func (f *Factory) UpdateDeck(input any) (any, error) {
 	usecase := deck.NewUpdateUseCase(f.ctx, f.deckService, f.txFactory)
