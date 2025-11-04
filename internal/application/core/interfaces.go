@@ -32,6 +32,10 @@ func (h *UseCaseHandler) ExecuteInTransaction(
 	if err != nil {
 		return nil, errors.Wrapf(err, errors.ErrorTypeSystem, "failed to create transaction")
 	}
+	// Begin the transaction before executing the function
+	if err := tx.Begin(); err != nil {
+		return nil, errors.Wrapf(err, errors.ErrorTypeSystem, "failed to begin transaction")
+	}
 	// committed := false
 	// defer func() {
 	// 	if !committed {

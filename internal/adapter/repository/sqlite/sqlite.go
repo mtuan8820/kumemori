@@ -3,8 +3,6 @@ package sqlite
 import (
 	"log"
 
-	"kumemori/internal/domain/model"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -17,10 +15,10 @@ func InitDb() (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 
-	err = db.AutoMigrate(&model.Card{}, &model.Deck{})
-	if err != nil {
-		return nil, err
-	}
+	// err = db.AutoMigrate(&model.Card{}, &model.Deck{})
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	log.Println("Db migrated successfully")
 	return db, nil

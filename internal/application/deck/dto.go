@@ -60,6 +60,7 @@ func (i *UpdateInput) ToDomain() ([]model.Card, []string) {
 	actions := make([]string, 0, len(i.CardsToUpdate))
 	for _, card := range i.CardsToUpdate {
 		cardsToUpdate = append(cardsToUpdate, model.Card{
+			ID:     card.ID,
 			DeckID: i.ID,
 			Front:  card.Front,
 			Back:   card.Back,

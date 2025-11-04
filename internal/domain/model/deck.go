@@ -168,6 +168,11 @@ func (d *Deck) Cards() []*Card {
 	return cardsCopy
 }
 
+func (d *Deck) LoadCards(cards []*Card) {
+	d.cards = make([]*Card, len(cards))
+	copy(d.cards, cards)
+}
+
 func (d *Deck) validateCard(front string, back string) error {
 	if front == "" {
 		return ErrEmptyCardFront

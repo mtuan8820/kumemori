@@ -1,6 +1,5 @@
 import type {model} from "../../wailsjs/go/models";
 import { ref } from "vue";
-import { CreateDeck, Save  } from "../../wailsjs/go/service/DeckService";
 import { useRouter } from "vue-router";
 
 interface CardItem{
@@ -66,9 +65,9 @@ export function useCreateDeckViewModel(){
             }))
 
 
-            const deck = await CreateDeck(name.value, deckCards)
+            // const deck = await CreateDeck(name.value, deckCards)
 
-            await Save(deck)
+            // await Save(deck)
 
             router.push({ name: 'home' })
         } catch (err) {

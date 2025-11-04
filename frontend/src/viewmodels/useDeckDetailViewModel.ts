@@ -1,17 +1,15 @@
 import type {model} from "../../wailsjs/go/models";
 import { onMounted, ref } from "vue";
-import { FindAllCards } from "../../wailsjs/go/service/DeckService";
+import { GetCards } from "../../wailsjs/go/application/Factory";
 
 export function useDeckDetailViewModel(deckId: number){
     const cards = ref<model.Card[]>([])
 
     async function loadCards(){
         try {
-            cards.value = await FindAllCards(deckId)
-            return cards
+            cards.value = await GetCards(deckId)
         } catch (err) {
             console.error("Failed to load cards:", err)
-            return []
         }
     }
 
@@ -23,8 +21,8 @@ export function useDeckDetailViewModel(deckId: number){
         // await AddCard(deckId, card)
     }
 
-    onMounted(() =>{
-        loadCards()
+    onMounted(async () =>{
+        await loadCards()
     })
 
     return { cards, createCard, loadCards}

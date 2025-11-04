@@ -1,5 +1,5 @@
 import { onMounted, ref } from "vue";
-import { FindAllCards } from "../../wailsjs/go/service/DeckService";
+import { GetCards } from "../../wailsjs/go/application/Factory";
 import { NewUpdateCardInput, NewUpdateInput, UpdateDeck } from "../../wailsjs/go/application/Factory";
 
 import router from "@/router";
@@ -21,7 +21,7 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
 
     const loadCards = async () => {
         try {
-            const cards = await FindAllCards(deckId)
+            const cards = await GetCards(deckId)
             return cards
         } catch (err) {
             console.error("Failed to load cards:", err)
@@ -31,7 +31,7 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
 
     onMounted(() => {
         loadCards().then(
-            res => cardItems.value = res.map(card => ({
+            res => cardItems.value = res.map((card: { ID: any; Front: any; Back: any; }) => ({
                 id: card.ID,
                 front: card.Front,
                 back: card.Back,
@@ -57,8 +57,22 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
         if (cardItems.value.length <= 1) {
             disableDeleteCardItem.value = true
         }
+        // If it's a newly added card (id=0), just remove it locally (do not send delete to backend)
+        if (id === 0) {
+            cardItems.value = cardItems.value.filter((_, i) => i !== index)
+            return
+        }
+        // Mark existing card as deleted
         cardItems.value[index].visible = false
         cardItems.value[index].action = "delete"
+    }
+
+    const onEditCard = (index: number) => {
+        const item = cardItems.value[index]
+        if (!item) return
+        if (item.action === "delete") return
+        if (item.id === 0 && item.action === "add") return
+        item.action = "update"
     }
 
     const submitUpdateDeck = async () => {
@@ -67,11 +81,18 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                 console.log("deck name must not be empty")
                 return
             } 
-
-            const updateCardList = await Promise.all(cardItems.value.map(card=>NewUpdateCardInput(card.id, card.front, card.back, card.action)))
-            const updateInput = await NewUpdateInput(deckId, deckName??'', updateCardList.length, updateCardList)
-
+            console.log('start deck update')
+            
+            // Build update list, skipping delete actions for new cards (id=0)
+            const updateCardList = await Promise.all(
+                cardItems.value
+                    .filter(card => !(card.action === "delete" && card.id === 0))
+                    .map(card => NewUpdateCardInput(card.id, card.front, card.back, card.action))
+            )
+            const updateInput = await NewUpdateInput(deckId, name.value??deckName, updateCardList.length, updateCardList)
+            console.log(updateInput)
             await UpdateDeck(updateInput)
+            console.log('deck update done')
 
             router.back()
         }
@@ -80,5 +101,5 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
         }
     }
 
-    return { name, cardItems, createCardItem, deleteCardItem, submitUpdateDeck }
+    return { name, cardItems, createCardItem, deleteCardItem, submitUpdateDeck, onEditCard }
 }

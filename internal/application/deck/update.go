@@ -22,6 +22,7 @@ func NewUpdateUseCase(
 	ctx context.Context, deckService service.IDeckService, txFactory repo.TransactionFactory,
 ) *UpdateUseCase {
 	return &UpdateUseCase{
+		ctx:            ctx,
 		UseCaseHandler: core.NewUseCaseHandler(txFactory),
 		deckService:    deckService,
 	}

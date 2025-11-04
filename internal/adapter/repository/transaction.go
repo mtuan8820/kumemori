@@ -65,10 +65,10 @@ type gormTransactionFactory struct {
 	db *gorm.DB
 }
 
-func (f *gormTransactionFactory) NewTransaction(ctx context.Context, opts any) (repo.Transaction, error) {
-	return &Transaction{ctx: ctx, Session: f.db}, nil
-}
-
 func NewGormTransactionFactory(db *gorm.DB) repo.TransactionFactory {
 	return &gormTransactionFactory{db: db}
+}
+
+func (f *gormTransactionFactory) NewTransaction(ctx context.Context, opts any) (repo.Transaction, error) {
+	return &Transaction{ctx: ctx, Session: f.db}, nil
 }

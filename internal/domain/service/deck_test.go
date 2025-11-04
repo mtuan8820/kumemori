@@ -15,7 +15,12 @@ type MockDeckRepo struct {
 	mock.Mock
 }
 
-func (m *MockDeckRepo) Save(ctx context.Context, deck *model.Deck) error {
+func (m *MockDeckRepo) Create(ctx context.Context, deck *model.Deck) error {
+	args := m.Called(ctx, deck)
+	return args.Error(0)
+}
+
+func (m *MockDeckRepo) Update(ctx context.Context, deck *model.Deck) error {
 	args := m.Called(ctx, deck)
 	return args.Error(0)
 }
@@ -54,7 +59,7 @@ func TestUpdate_DeckNotFound(t *testing.T) {
 	mockRepo := new(MockDeckRepo)
 	svc := service.NewDeckService(mockRepo)
 
-	mockRepo.On("FindByID", uint(1)).Return((*model.Deck)(nil), errors.New("not found"))
+	mockRepo.On("FindByID", mock.Anything, uint(1)).Return((*model.Deck)(nil), errors.New("not found"))
 
 	err := svc.Update(context.TODO(), 1, "NewName", nil, nil)
 
@@ -69,7 +74,7 @@ func TestUpdate_AddCard(t *testing.T) {
 
 	deck := mustNewDeck("Deck1")
 	mockRepo.On("FindByID", mock.Anything, uint(1)).Return(deck, nil)
-	mockRepo.On("Save", mock.Anything, mock.AnythingOfType("*model.Deck")).Return(nil)
+	mockRepo.On("Update", mock.Anything, mock.AnythingOfType("*model.Deck")).Return(nil)
 
 	card := model.Card{Front: "Q", Back: "A"}
 

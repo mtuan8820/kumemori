@@ -14,7 +14,7 @@ const props = defineProps<EditDeckViewProps>()
 
 const deckId = Number(props.id)
 
-const { name: deckName , cardItems, createCardItem, deleteCardItem, submitUpdateDeck } = useEditDeckViewModel(deckId, props.name)
+const { name: deckName , cardItems, createCardItem, deleteCardItem, submitUpdateDeck, onEditCard } = useEditDeckViewModel(deckId, props.name)
 
 
 
@@ -45,11 +45,11 @@ const { name: deckName , cardItems, createCardItem, deleteCardItem, submitUpdate
             </div>
             <div class="flex justify-between gap-4">
                 <div class="flex flex-col flex-1">
-                    <AdaptiveTextarea :max-length=1000 v-model="card.front" />
+                    <AdaptiveTextarea :max-length=1000 v-model="card.front" @update:modelValue="onEditCard(index)" />
                     Front
                 </div>
                 <div class="flex flex-col flex-1">
-                    <AdaptiveTextarea :max-length=1000 v-model="card.back" />
+                    <AdaptiveTextarea :max-length=1000 v-model="card.back" @update:modelValue="onEditCard(index)" />
                     Back
                 </div>
             </div>

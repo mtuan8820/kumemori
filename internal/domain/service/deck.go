@@ -27,8 +27,8 @@ func (s *DeckService) CreateDeck(ctx context.Context, name string, cards []*mode
 		return nil, fmt.Errorf("invalid deck data: %w", err)
 	}
 
-	// persist the entity
-	if err := s.Repository.Save(ctx, deck); err != nil {
+	// persist the entity (create only)
+	if err := s.Repository.Create(ctx, deck); err != nil {
 		return nil, fmt.Errorf("failed to create deck: %w", err)
 	}
 
@@ -44,7 +44,7 @@ func (s *DeckService) Delete(ctx context.Context, id uint) error {
 }
 
 func (s *DeckService) Save(ctx context.Context, deck *model.Deck) error {
-	return s.Repository.Save(ctx, deck)
+	return s.Repository.Update(ctx, deck)
 }
 
 func (s *DeckService) FindById(ctx context.Context, id uint) (*model.Deck, error) {
@@ -65,7 +65,7 @@ func (s *DeckService) AddCard(ctx context.Context, deckID uint, card model.Card)
 		return err
 	}
 
-	if err := s.Repository.Save(ctx, deck); err != nil {
+	if err := s.Repository.Update(ctx, deck); err != nil {
 		return err
 	}
 
@@ -82,7 +82,7 @@ func (s *DeckService) DeleteCard(ctx context.Context, deckID uint, cardID uint) 
 		return err
 	}
 
-	if err := s.Repository.Save(ctx, deck); err != nil {
+	if err := s.Repository.Update(ctx, deck); err != nil {
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (s *DeckService) UpdateCard(ctx context.Context, deckID uint, cardID uint, 
 		return err
 	}
 
-	if err := s.Repository.Save(ctx, deck); err != nil {
+	if err := s.Repository.Update(ctx, deck); err != nil {
 		return err
 	}
 
@@ -124,7 +124,9 @@ func (s *DeckService) Update(ctx context.Context, deckID uint, name string, card
 	}
 
 	if deck.Name != name {
-		deck.Rename(name)
+		if err := deck.Rename(name); err != nil {
+			return err
+		}
 	}
 
 	for index, card := range cards {
@@ -132,17 +134,23 @@ func (s *DeckService) Update(ctx context.Context, deckID uint, name string, card
 		case "not changed":
 			continue
 		case "add":
-			deck.CreateCard(card.Front, card.Back)
+			if _, err := deck.CreateCard(card.Front, card.Back); err != nil {
+				return err
+			}
 		case "delete":
-			deck.RemoveCard(card.ID)
+			if err := deck.RemoveCard(card.ID); err != nil {
+				return err
+			}
 		case "update":
-			deck.UpdateCard(card.ID, card.Front, card.Back)
+			if err := deck.UpdateCard(card.ID, card.Front, card.Back); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("invalid action: %s", actions[index])
 		}
 	}
 
-	if err := s.Repository.Save(ctx, deck); err != nil {
+	if err := s.Repository.Update(ctx, deck); err != nil {
 		return fmt.Errorf("failed to save deck: %w", err)
 	}
 
