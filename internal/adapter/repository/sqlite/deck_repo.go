@@ -118,7 +118,13 @@ func (d *DeckRepo) FindAll(ctx context.Context) ([]*model.Deck, error) {
 
 // delete a deck (also cascade delete its card)
 func (d *DeckRepo) Delete(ctx context.Context, id uint) error {
-	if err := d.db.Delete(&model.Deck{}, id).Error; err != nil {
+	db := d.db.WithContext(ctx)
+
+	if err := db.Where("deck_id = ?", id).Delete(&model.Card{}).Error; err != nil {
+		return fmt.Errorf("failed to delete cards for deck %d: %w", id, err)
+	}
+
+	if err := db.Delete(&model.Deck{}, id).Error; err != nil {
 		return fmt.Errorf("failed to delete deck with id %d: %w", id, err)
 	}
 

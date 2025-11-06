@@ -11,7 +11,7 @@ const DeckCardLimit = 100
 // Card entity
 type Card struct {
 	ID           uint
-	DeckID       uint
+	DeckID       uint `gorm:"not null;index"`
 	Front        string
 	Back         string
 	CreatedAt    time.Time

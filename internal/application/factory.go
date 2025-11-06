@@ -50,7 +50,6 @@ func (f *Factory) GetCards(id uint) (any, error) {
 	return usecase.Execute(id)
 }
 
-// UpdateDeckUseCase returns a new update deck use case
 func (f *Factory) UpdateDeck(input any) (any, error) {
 	usecase := deck.NewUpdateUseCase(f.ctx, f.deckService, f.txFactory)
 	return usecase.Execute(input)
@@ -72,4 +71,9 @@ func (f *Factory) NewUpdateCardInput(ID uint, Front string, Back string, Action 
 		Back:   Back,
 		Action: Action,
 	}
+}
+
+func (f *Factory) DeleteDeck(deckId uint) (any, error) {
+	usecase := deck.NewDeleteUseCase(f.ctx, f.deckService, f.txFactory)
+	return usecase.Execute(deckId)
 }

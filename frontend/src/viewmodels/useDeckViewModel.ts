@@ -1,7 +1,7 @@
 import { ref, onMounted } from "vue"
 
 import type { model } from "../../wailsjs/go/models" 
-import { GetAllDecks } from "../../wailsjs/go/application/Factory"
+import { GetAllDecks, DeleteDeck } from "../../wailsjs/go/application/Factory"
 
 export function useDeckViewModel(){
     const decks = ref<model.Deck[]>([])
@@ -15,6 +15,7 @@ export function useDeckViewModel(){
     }
 
     async function deleteDeck(id: number){
+        await DeleteDeck(id)
     }
 
     async function updateDeck(id: number, name: string){

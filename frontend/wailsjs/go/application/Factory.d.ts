@@ -5,6 +5,8 @@ import {deck} from '../models';
 
 export function CreateDeck(arg1:any):Promise<any>;
 
+export function DeleteDeck(arg1:number):Promise<any>;
+
 export function GetAllDecks():Promise<any>;
 
 export function GetCards(arg1:number):Promise<any>;

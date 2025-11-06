@@ -6,6 +6,10 @@ export function CreateDeck(arg1) {
   return window['go']['application']['Factory']['CreateDeck'](arg1);
 }
 
+export function DeleteDeck(arg1) {
+  return window['go']['application']['Factory']['DeleteDeck'](arg1);
+}
+
 export function GetAllDecks() {
   return window['go']['application']['Factory']['GetAllDecks']();
 }

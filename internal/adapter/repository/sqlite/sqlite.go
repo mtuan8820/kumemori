@@ -1,6 +1,7 @@
 package sqlite
 
 import (
+	"kumemori/internal/domain/model"
 	"log"
 
 	"gorm.io/driver/sqlite"
@@ -15,11 +16,17 @@ func InitDb() (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 
-	// err = db.AutoMigrate(&model.Card{}, &model.Deck{})
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// Ensure SQLite enforces foreign keys for cascading
+	if err := db.Exec("PRAGMA foreign_keys = ON").Error; err != nil {
+		return nil, err
+	}
 
-	// log.Println("Db migrated successfully")
+	// Migrate parent before child so FK can be created
+	err = db.AutoMigrate(&model.Deck{}, &model.Card{})
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println("Db migrated successfully")
 	return db, nil
 }
