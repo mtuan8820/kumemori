@@ -70,3 +70,8 @@ func (i *UpdateInput) ToDomain() ([]model.Card, []string) {
 
 	return cardsToUpdate, actions
 }
+
+type CreateInput struct {
+	Name  string       `json:"name"`  //deck name
+	Cards []model.Card `json:"cards"` //deck cards
+}

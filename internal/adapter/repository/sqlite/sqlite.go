@@ -20,6 +20,6 @@ func InitDb() (*gorm.DB, error) {
 	// 	return nil, err
 	// }
 
-	log.Println("Db migrated successfully")
+	// log.Println("Db migrated successfully")
 	return db, nil
 }

@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"kumemori/internal/application/deck"
+	"kumemori/internal/domain/model"
 	"kumemori/internal/domain/repo"
 	"kumemori/internal/domain/service"
 )
@@ -24,6 +25,18 @@ func NewFactory(
 		ctx:         ctx,
 		deckService: deckService,
 		txFactory:   txFactory,
+	}
+}
+
+func (f *Factory) CreateDeck(input any) (any, error) {
+	usecase := deck.NewCreateUseCase(f.ctx, f.deckService, f.txFactory)
+	return usecase.Execute(input)
+}
+
+func (f *Factory) NewCreateDeckInput(name string, cards []model.Card) *deck.CreateInput {
+	return &deck.CreateInput{
+		Name:  name,
+		Cards: cards,
 	}
 }
 

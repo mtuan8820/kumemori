@@ -1,32 +1,59 @@
 package deck
 
-// import (
-// 	"context"
-// 	"kumemori/internal/application/core"
-// 	"kumemori/internal/domain/repo"
-// 	"kumemori/internal/domain/service"
-// )
+import (
+	"context"
+	"encoding/json"
+	"kumemori/internal/application/core"
+	"kumemori/internal/domain/model"
+	"kumemori/internal/domain/repo"
+	"kumemori/internal/domain/service"
+)
 
-// type CreateUseCase struct {
-// 	*core.UseCaseHandler
-// 	deckService service.IDeckService
-// }
+type CreateUseCase struct {
+	ctx context.Context
+	*core.UseCaseHandler
+	deckService service.IDeckService
+}
 
-// func NewCreateUseCase(
-// 	deckService service.IDeckService, txFactory repo.TransactionFactory,
-// ) *CreateUseCase {
-// 	return &CreateUseCase{
-// 		UseCaseHandler: core.NewUseCaseHandler(txFactory),
-// 		deckService:    deckService,
-// 	}
-// }
+func NewCreateUseCase(
+	ctx context.Context,
+	deckService service.IDeckService, txFactory repo.TransactionFactory,
+) *CreateUseCase {
+	return &CreateUseCase{
+		ctx:            ctx,
+		UseCaseHandler: core.NewUseCaseHandler(txFactory),
+		deckService:    deckService,
+	}
+}
 
-// func (uc *CreateUseCase) Execute(ctx context.Context, input any) (any, error) {
-// 	// validate input
-// 	createInput, ok := input.(*CreateInput)
+func (uc *CreateUseCase) Execute(input any) (any, error) {
+	var createInput CreateInput
 
-// 	// execute in transaction
+	jsonBytes, err := json.Marshal(input)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(jsonBytes, &createInput); err != nil {
+		return nil, err
+	}
 
-// 	return nil, nil
+	// execute in transaction
+	result, err := uc.ExecuteInTransaction(uc.ctx, func(ctx context.Context, tx repo.Transaction) (any, error) {
+		ptrCards := make([]*model.Card, len(createInput.Cards))
+		for i := range createInput.Cards {
+			ptrCards[i] = &createInput.Cards[i]
+		}
 
-// }
+		deck, err := uc.deckService.CreateDeck(ctx, createInput.Name, ptrCards)
+		if err != nil {
+			return nil, err
+		}
+
+		return deck, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

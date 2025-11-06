@@ -81,7 +81,6 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                 console.log("deck name must not be empty")
                 return
             } 
-            console.log('start deck update')
             
             // Build update list, skipping delete actions for new cards (id=0)
             const updateCardList = await Promise.all(
@@ -90,9 +89,7 @@ export function useEditDeckViewModel(deckId: number, deckName: string | null | u
                     .map(card => NewUpdateCardInput(card.id, card.front, card.back, card.action))
             )
             const updateInput = await NewUpdateInput(deckId, name.value??deckName, updateCardList.length, updateCardList)
-            console.log(updateInput)
             await UpdateDeck(updateInput)
-            console.log('deck update done')
 
             router.back()
         }

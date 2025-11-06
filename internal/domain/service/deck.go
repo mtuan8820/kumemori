@@ -27,7 +27,13 @@ func (s *DeckService) CreateDeck(ctx context.Context, name string, cards []*mode
 		return nil, fmt.Errorf("invalid deck data: %w", err)
 	}
 
-	// persist the entity (create only)
+	for _, card := range cards {
+		if err := deck.AddCard(*card); err != nil {
+			return nil, fmt.Errorf("failed to add card: %w", err)
+		}
+	}
+
+	// persist the entity (both deck & cards)
 	if err := s.Repository.Create(ctx, deck); err != nil {
 		return nil, fmt.Errorf("failed to create deck: %w", err)
 	}
